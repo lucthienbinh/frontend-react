@@ -5,15 +5,11 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-import {
-    Link
-} from "react-router-dom";
-
 // Source code: https://www.w3schools.com/howto/howto_css_fixed_footer.asp
 
 export default function Footer() {
     return (
-        <footer className="font-small blue py-2 bg-secondary">
+        <footer className="font-small py-2">
             <Container className="Footer-container text-center " fluid>
                 <Row>
                     <Col className="md-6 mt-md-0 mt-3">
@@ -38,7 +34,7 @@ export default function Footer() {
                 </Row>
             </Container>
             <div className="footer-copyright text-center py-2">	&copy; 2019 Copyright:
-                    <Link> Hieu Phan</Link>
+                  
             </div>
         </footer>
     )

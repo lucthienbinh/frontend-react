@@ -12,7 +12,7 @@ export default function AdminLayout({ children }) {
     <>
       <NavBar links={AdminLinks} loggedIn />
       <div className="layout-container-parent">
-           <Container className="layout-container-child">{children}</Container>
+        <Container className="layout-container-child">{children}</Container>
       </div>
       <Footer />
     </>

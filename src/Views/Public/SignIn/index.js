@@ -28,7 +28,7 @@ export default function Login () {
         email: email,
         password: password,
       }),
-    }).then(() => history.push("/customer/list"));
+    }).then(() => history.replace("/customer/list"));
   };
 
   return (

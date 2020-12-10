@@ -1,19 +1,15 @@
 const AdminLinks = [
     {
-        name: "Khóa học",
+        name: "Customer",
         dropDown: true,
         childrens: [
             {
-                href: "/course/create",
-                name: "Thêm khóa học",
+                href: "/customer/list",
+                name: "Customer list",
             },
             {
-                href: "/my-courses",
-                name: "Danh sách khóa học",
-            },
-            {
-                href: "/my-lessons",
-                name: "Danh sách bài học",
+                href: "/customer/create",
+                name: "Create customer",
             },
         ]
     },

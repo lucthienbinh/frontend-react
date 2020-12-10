@@ -4,6 +4,7 @@ import './index.css';
 import { useCookies } from 'react-cookie';
 import CustomerCard from '../../../../../Components/CustomerCard';
 import Loading from '../../../../Loading'
+import AdminLayout from '../../../../Layouts/AdminLayout'
 
 export default function CustomerList() {
   const [cookies, setCookie, removeCookie] = useCookies(['csrf']);
@@ -37,7 +38,12 @@ export default function CustomerList() {
   if (isLoading) {
     return <Loading />;
   } else {
-    return <div>{customerCards}</div>;
+    return (
+      <AdminLayout>
+        <div>{customerCards}</div>
+        
+      </AdminLayout>
+    );
   }
   
 }

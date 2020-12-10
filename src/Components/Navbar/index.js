@@ -4,7 +4,8 @@ import './index.css';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
-import FontAwesome from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCoffee } from '@fortawesome/free-solid-svg-icons'
 
 export default function NavBarContainer(props) {
 
@@ -26,7 +27,7 @@ export default function NavBarContainer(props) {
 
     return (
         <Navbar bg="light" expand="lg" className={sticky ? 'sticky' : ''}>
-            <Navbar.Brand href="/">Move Nice</Navbar.Brand>
+            <Navbar.Brand href="/">Move Nice1</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
@@ -64,9 +65,7 @@ export default function NavBarContainer(props) {
                             ? 
                             <React.Fragment>
                                 <Nav.Link href="/notification">
-                                    <FontAwesome
-                                        name="bell"
-                                    />
+                                    <FontAwesomeIcon icon={faCoffee} />
                                 </Nav.Link>
                                 <Nav.Link href="/profile">Trang cá nhân</Nav.Link>
                             </React.Fragment>

@@ -11,6 +11,7 @@ export default function CustomerCard(props) {
             <p>{props.customer.address}</p>
             <p>{props.customer.point}</p>
             <p>{props.customer.created_at}</p>
+            <hr></hr>
         </div>
     )
 }

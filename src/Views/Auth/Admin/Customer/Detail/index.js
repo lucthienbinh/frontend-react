@@ -1,43 +1,53 @@
-import React, {useState, useEffect} from 'react';
-import './index.css';
-
-import { useCookies } from 'react-cookie';
+import React, { useState, useEffect } from "react";
+import "./index.css";
+import { useHistory } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
-import CustomerCard from '../../../../../Components/CustomerCard';
-import Loading from '../../../../Loading'
+
+import AdminLayout from "../../../../Layouts/AdminLayout";
+import CustomerCard from "../../../../../Components/Card/Customer";
+import Loading from "../../../../Loading";
 
 export default function CustomerDetail() {
-  const [cookies, setCookie, removeCookie] = useCookies(['csrf']);
-  
-  const [ customer, setCustomer] = useState({});
-  const [ isLoading, setIsLoading] = useState(true);
+  const history = useHistory();
+  const [cookies] = useCookies(["csrf"]);
+
+  const [customer, setCustomer] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   let { id } = useParams();
 
   useEffect(() => {
-    fetch("/api/customer/id/" + id, {
+    const requestOptions = {
       headers: {
         "X-CSRF-Token": cookies.csrf,
       },
       credentials: "include",
-    })
+    };
+
+    fetch("/api/customer/id/" + id, requestOptions)
       .then((res) => {
+        setIsLoading(false);
         if (res.status !== 200) {
-          return Promise.reject("Unauthorized");
+          return Promise.reject("Bad request sent to server!");
         }
         return res.json();
       })
-      .then((json) => setCustomer(json.customer_info))
-      .then(() => setIsLoading(false))
-      .catch((error) => {
-        setIsLoading(false);
-        removeCookie("csrf", { path: "/" });
+      .then(json => {
+        setCustomer(json.customer_info);
+      })
+      .catch((err) => {
+        console.log(err);
       });
+      
   }, []);
- 
+
   if (isLoading) {
     return <Loading />;
   } else {
-    return <CustomerCard customer={customer}/>;
+    return (
+      <AdminLayout>
+        <CustomerCard customer={customer} />
+      </AdminLayout>
+    );
   }
-  
 }

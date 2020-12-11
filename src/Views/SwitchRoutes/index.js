@@ -9,9 +9,11 @@ import {useCookies} from 'react-cookie';
 
 import SignIn from '../Public/SignIn';
 import NotFound from '../Public/NotFound';
+
 import CustomerList from '../Auth/Admin/Customer/List';
 import CustomerDetail from '../Auth/Admin/Customer/Detail';
 import CustomerCreate from '../Auth/Admin/Customer/Create';
+import CustomerUpdate from '../Auth/Admin/Customer/Update';
 
 export default function App() {
   const [cookies] = useCookies(['csrf']);
@@ -30,8 +32,9 @@ export default function App() {
       <Router>
         <Switch>
           <Route exact path="/customer/list" component={CustomerList} />
-          <Route exact path="/customer/id/:id" component={CustomerDetail} />
+          <Route exact path="/customer/detail/:id" component={CustomerDetail} />
           <Route exact path="/customer/create" component={CustomerCreate} />
+          <Route exact path="/customer/update/:id" component={CustomerUpdate} />
         </Switch>
       </Router>
     );

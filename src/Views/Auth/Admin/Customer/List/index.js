@@ -1,39 +1,78 @@
-import React, {useState, useEffect} from 'react';
-import './index.css';
+import React, { useState, useEffect } from "react";
+import "./index.css";
+import { useCookies } from "react-cookie";
 
-import { useCookies } from 'react-cookie';
-import CustomerCard from '../../../../../Components/CustomerCard';
-import Loading from '../../../../Loading'
-import AdminLayout from '../../../../Layouts/AdminLayout'
+import CustomerCard from "../../../../../Components/Card/Customer";
+import Loading from "../../../../Loading";
+import AdminLayout from "../../../../Layouts/AdminLayout";
 
 export default function CustomerList() {
-  const [cookies, setCookie, removeCookie] = useCookies(['csrf']);
-  
-  const [ customers, setCustomers] = useState([]);
-  const [ isLoading, setIsLoading] = useState(true);
+  const [cookies] = useCookies(["csrf"]);
+
+  const [customers, setCustomers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/customer/list", {
+    fetchCustomerList();
+  }, []);
+
+  useEffect(() => {
+    fetchCustomerList();
+  }, []);
+
+  const fetchCustomerList = async () => {
+    setIsLoading(true);
+    const requestOptions = {
       headers: {
         "X-CSRF-Token": cookies.csrf,
       },
       credentials: "include",
+    };
+
+    return await fetch("/api/customer/list", requestOptions)
+    .then((res) => {
+      setIsLoading(false);
+      if (res.status !== 200) {
+        return Promise.reject("Bad request sent to server!");
+      }
+      return res.json();
     })
+    .then((json) => {
+      setCustomers(json.customer_list);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
+  const handleDelete = (deleteLinkAPI) => {
+
+    const requestOptions = {
+      headers: {
+        "X-CSRF-Token": cookies.csrf,
+      },
+      credentials: "include",
+      method: "DELETE",
+    };
+
+    fetch(deleteLinkAPI, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
-          return Promise.reject("Unauthorized");
+          return Promise.reject("Bad request sent to server!");
         }
         return res.json();
       })
-      .then((json) => setCustomers(json.customer_list))
-      .then(() => setIsLoading(false))
-      .catch((error) => {
-        setIsLoading(false);
-        removeCookie("csrf", { path: "/" });
+      .then((data) => console.log(data))
+      .catch((err) => {
+        console.log(err);
       });
-  }, []);
- 
-  const customerCards = customers.map((customer, index) => <CustomerCard key={index} customer={customer} />)
+
+    return fetchCustomerList();
+  };
+
+  const customerCards = customers.map((customer, index) => (
+    <CustomerCard key={index} customer={customer} handleDelete={handleDelete}/>
+  ));
 
   if (isLoading) {
     return <Loading />;
@@ -41,9 +80,7 @@ export default function CustomerList() {
     return (
       <AdminLayout>
         <div>{customerCards}</div>
-        
       </AdminLayout>
     );
   }
-  
 }

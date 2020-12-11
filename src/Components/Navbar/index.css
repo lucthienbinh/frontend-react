@@ -19,6 +19,12 @@
 .navbar-custom .navbar-text {
     color: whitesmoke !important;
     font-weight: 500;
+    font-size: 1.5rem;
+}
+
+.navbar-light .navbar-brand:hover {
+    color: rgb(33, 33, 33) !important;
+    background-color: #bab3a9 !important;
 }
 
 /* change the link color */
@@ -33,6 +39,7 @@
 .navbar-custom .navbar-nav .nav-link:hover  {
     color: rgb(33, 33, 33) !important;
     background-color: #bab3a9 !important;
+    border-radius: 50px;
 }
 
 /* for dropdown only - change the color of droodown */

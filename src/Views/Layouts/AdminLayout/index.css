@@ -1,8 +1,10 @@
 .layout-container-parent {
     min-height: 96vh;
     background-color: #f5f5f5;
+    padding: 0.5rem 0rem;
 }
 
 .layout-container-child {
     background-color: white;
+    padding: 1rem;
 }

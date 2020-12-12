@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
-import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
 
@@ -9,7 +8,6 @@ import CustomerCard from "../../../../../Components/Card/Customer";
 import Loading from "../../../../Loading";
 
 export default function CustomerDetail() {
-  const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
 
   const [customer, setCustomer] = useState({});
@@ -38,7 +36,7 @@ export default function CustomerDetail() {
       .catch((err) => {
         console.log(err);
       });
-      
+
   }, []);
 
   if (isLoading) {

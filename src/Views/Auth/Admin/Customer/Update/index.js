@@ -8,7 +8,7 @@ import { useCookies } from "react-cookie";
 import AdminLayout from "../../../../Layouts/AdminLayout";
 import Loading from "../../../../Loading";
 
-export default function CustomerDetail() {
+export default function CustomerUpdate() {
   const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
 

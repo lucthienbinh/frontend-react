@@ -6,9 +6,7 @@ import CustomerCard from "../../../../../Components/Card/Customer";
 import Loading from "../../../../Loading";
 import AdminLayout from "../../../../Layouts/AdminLayout";
 
-import { PaginationTable } from "../../../../../Components/Table/PaginationTable";
-
-export default function CustomerList() {
+export default function EmployeeList() {
   const [cookies] = useCookies(["csrf"]);
 
   const [customers, setCustomers] = useState([]);
@@ -78,7 +76,6 @@ export default function CustomerList() {
     return (
       <AdminLayout>
         <div>{customerCards}</div>
-        <PaginationTable />
       </AdminLayout>
     );
   }

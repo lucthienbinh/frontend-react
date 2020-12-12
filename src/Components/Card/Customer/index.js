@@ -8,14 +8,13 @@ export default function CustomerCard(props) {
   let deleteLinkAPI = "/api/customer/delete/" + props.customer.id;
   return (
     <div>
-      <p>{props.customer.id}</p>
-      <p>{props.customer.name}</p>
-      <p>{props.customer.age}</p>
-      <p>{props.customer.phone}</p>
-      <p>{props.customer.gender}</p>
-      <p>{props.customer.address}</p>
-      <p>{props.customer.point}</p>
-      <p>{props.customer.created_at}</p>
+      <p>ID: {props.customer.id}</p>
+      <p>Name: {props.customer.name}</p>
+      <p>Age: {props.customer.age}</p>
+      <p>Phone: {props.customer.phone}</p>
+      <p>Gender: {props.customer.gender}</p>
+      <p>Address: {props.customer.address}</p>
+      <p>Point: {props.customer.point}</p>
       <Link to={detailLink} className="btn btn-1">
         Detail
       </Link>

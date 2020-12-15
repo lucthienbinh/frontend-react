@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { useTable, usePagination, useFilters } from "react-table";
-import { Link } from "react-router-dom";
 import { Button, ButtonGroup } from "react-bootstrap";
 import "./table.css";
 import { ColumnFilter } from "./ColumnFilter";
@@ -75,19 +74,17 @@ export const TableModal = (props) => {
                       >
                         <ButtonGroup className="m-1">
                           <Button
-                            className="btn btn-1"
+                            className="btn btn-9"
                             onClick={() =>
-                              props.actionLink.handleUpdate(cell.row.values.id)
+                              props.tableButton.buttonUpdate(cell.row.values.id)
                             }
                           >
                             Update
                           </Button>
                           <Button
-                            className="btn btn-8"
+                            className="btn btn-10"
                             onClick={() =>
-                              props.actionLink.handleDelete(
-                                props.actionLink.deleteLink + cell.row.values.id
-                              )
+                              props.tableButton.buttonDelete(cell.row.values.id)
                             }
                           >
                             Delete
@@ -104,9 +101,9 @@ export const TableModal = (props) => {
                         }}
                       >
                         <Button
-                          className="btn btn-4"
+                          className="btn btn-8"
                           onClick={() =>
-                            props.actionLink.handleDetail(cell.row.values.id)
+                            props.tableButton.buttonDetail(cell.row.values.id)
                           }
                         >
                           {cell.row.values.id}

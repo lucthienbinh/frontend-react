@@ -1,26 +1,16 @@
-.Location-List-Overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.75);
-};
+.Location-List-Header {
+    text-align: center;
+    padding-top: 1rem;
+}
 
-.Location-List-Modal {
-    position: absolute;
-    width: 75%;
-    margin: 0 auto;
-    /* text-align: 'center';
-    top: "40px";
-    left: "40px";
-    right: "40px";
-    bottom: "40px"; */
-    border: 1px solid #ccc;
-    background: #fff;
-    overflow: auto;
-    --webkit-overflow-scrolling: touch;
-    border-radius: 4px;
+.Location-List-Create-Button {
+    width: 150px;
+    float: right;
+    height: 60px;
+    margin-right: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #c4ac84 !important;
+    font-size: 1.5rem !important;
     outline: none;
-    padding: 20px;
-};
+}
+

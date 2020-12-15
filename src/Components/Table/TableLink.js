@@ -78,12 +78,12 @@ export const TableLink = (props) => {
                             to={
                               props.actionLink.updateLink + cell.row.values.id
                             }
-                            className="btn btn-1"
+                            className="btn btn-9"
                           >
                             Update
                           </Link>
                           <Button
-                            className="btn btn-8"
+                            className="btn btn-10"
                             onClick={() =>
                               props.actionLink.handleDelete(
                                 props.actionLink.deleteLink + cell.row.values.id
@@ -105,7 +105,7 @@ export const TableLink = (props) => {
                       >
                         <Link
                           to={props.actionLink.detailLink + cell.row.values.id}
-                          className="btn btn-4"
+                          className="btn btn-8"
                         >
                           {cell.row.values.id}
                         </Link>

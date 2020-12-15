@@ -1,30 +1,69 @@
 import React, { useState, useEffect } from "react";
+import "./index.css";
 import { Button, Form, Col, Row } from "react-bootstrap";
 import Modal from "react-modal";
 
 Modal.setAppElement("#root");
 export default function LocationCard(props) {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [state, setState] = useState({
+    id: 0,
     city: "",
     district: 0,
   });
-
-  useEffect(() => {
-    setModalIsOpen(props.modalIsOpen);
-  },[props.modalIsOpen])
-
   const city = state.city;
   const district = state.district;
 
-  if (typeof props.location !== 'undefined') {
-    setState(() => {
-      return {
-        city: props.location.city,
-        district: props.location.district,
+  const [modalInfo, setModalInfo] = useState({
+    modalName: "",
+    hideSubmitButton: false,
+    submitButtonName: "",
+  });
+  const modalName = modalInfo.modalName;
+  const hideSubmitButton = modalInfo.hideSubmitButton;
+  const submitButtonName = modalInfo.submitButtonName;
+
+  useEffect(() => {
+    if (typeof props.location !== "undefined") {
+      setState(() => {
+        return {
+          id: props.location.id,
+          city: props.location.city,
+          district: props.location.district,
+        };
+      });
+      if (props.disabledInput === true) {
+        setModalInfo(() => {
+          return {
+            modalName: "Delivery detail",
+            hideSubmitButton: true,
+          };
+        });
+      } else {
+        setModalInfo(() => {
+          return {
+            modalName: "Update delivery",
+            hideSubmitButton: false,
+            submitButtonName: "Update",
+          };
+        });
       }
-    })
-  }
+    } else {
+      setState(() => {
+        return {
+          id: 30,
+          city: "",
+          district: "",
+        };
+      });
+      setModalInfo(() => {
+        return {
+          modalName: "Create delivery",
+          hideSubmitButton: false,
+          submitButtonName: "Create",
+        };
+      });
+    }
+  }, [props.location, props.disabledInput]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -33,16 +72,20 @@ export default function LocationCard(props) {
     });
   };
 
-  const handleCloseModal = () => {
-    setModalIsOpen(false);
+  const handleSubmit = () => {
+    if (typeof props.location === "undefined") {
+      props.modalButton.submitCreate(state);
+    } else {
+      props.modalButton.submitUpdate(state);
+    }
     props.setModalIsOpen(false);
-  }
+  };
 
   return (
     <>
       <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
+        isOpen={props.modalIsOpen}
+        onRequestClose={() => props.setModalIsOpen(false)}
         style={{
           overlay: {
             position: "fixed",
@@ -54,8 +97,9 @@ export default function LocationCard(props) {
           },
           content: {
             position: "absolute",
-            width: "50%",
-            height: "50%",
+            width: "600px",
+            height: "235px",
+            top: "30%",
             margin: "0 auto",
             border: "1px solid #ccc",
             background: "#fff",
@@ -67,7 +111,9 @@ export default function LocationCard(props) {
           },
         }}
       >
-        <h2>Modal header</h2>
+        <div className="Location-Modal-Align-Center">
+          <h2>{modalName}</h2>
+        </div>
         <Form className="content">
           <Form.Group as={Row} controlId="formHorizontalEmail">
             <Form.Label column sm={2}>
@@ -81,6 +127,7 @@ export default function LocationCard(props) {
                 value={city}
                 onChange={handleChange}
                 required
+                disabled={props.disabledInput}
               />
             </Col>
           </Form.Group>
@@ -97,26 +144,26 @@ export default function LocationCard(props) {
                 value={district}
                 onChange={handleChange}
                 required
+                disabled={props.disabledInput}
               />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row}>
-            <Col sm={{ span: 1, offset: 1 }}>
-              <Button className="btn-6" type="submit">
-                Create
-              </Button>
-            </Col>
-
-            <Col sm={{ span: 1 }}>
-              <Button
-                className="btn-7"
-                onClick={handleCloseModal}
-              >
-                Cancel
-              </Button>
-            </Col>
-          </Form.Group>
+          <div className="Location-Modal-Align-Center">
+            <Button
+              className="btn-6"
+              onClick={handleSubmit}
+              hidden={hideSubmitButton}
+            >
+              {submitButtonName}
+            </Button>
+            <Button
+              className="btn-7"
+              onClick={() => props.setModalIsOpen(false)}
+            >
+              Cancel
+            </Button>
+          </div>
         </Form>
       </Modal>
     </>

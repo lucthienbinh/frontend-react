@@ -15,7 +15,7 @@
     text-align: center;
     transition: 0.5s;
     background-size: 200% auto;
-    color: #444;
+    color: #444 !important;
     /* text-shadow: 0px 0px 10px rgba(0,0,0,0.2); */
     box-shadow: 0 0 20px #eee;
     border-radius: 8px;
@@ -48,18 +48,21 @@
 }
 
 .btn-6 {
-    background-color: #ba9a8e;
-    background-image: linear-gradient(315deg, #ba9a8e 0%, #6f5242 74%);
+    background-color: #eb9573 !important;
 }
   
 .btn-7 {
-    background-color: #ffffff;
-    background-image: linear-gradient(315deg, #ffffff 0%, #cc9a6b 74%);
+    background-color: #e2c9be !important;
 }
 
 .btn-8 {
-    background-color: #f7b42c;
-    background-image: linear-gradient(315deg, #f7b42c 0%, #fc575e 100%);
-    
-    
+    background-color: #D2B48C !important;
+}
+
+.btn-9 {
+    background-color: #ffb676 !important;
+}
+
+.btn-10 {
+    background-color: #ff3741 !important;
 }

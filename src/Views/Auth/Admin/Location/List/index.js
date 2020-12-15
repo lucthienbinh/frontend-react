@@ -175,8 +175,8 @@ export default function LocationList() {
     return (
       <AdminLayout>
         <div>
-          <h1 className="Location-List-Header">Delivery location list</h1>
-          <Button className="Location-List-Create-Button" onClick={buttonCreate}>Create</Button>
+          <p className="location-list-header">Delivery location list</p>
+          <Button className="location-list-create-button" onClick={buttonCreate}>Create</Button>
         </div>
         <TableModal
           columns={COLUMNS}

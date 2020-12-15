@@ -1,0 +1,17 @@
+.customer-list-header {
+    text-align: center;
+    padding: 1rem;
+    font-size: 3rem;
+}
+
+.customer-list-create-button {
+    width: 150px;
+    float: right;
+    height: 60px;
+    margin-right: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #c4ac84 !important;
+    font-size: 1.5rem !important;
+    outline: none;
+    line-height: 3rem !important;
+}

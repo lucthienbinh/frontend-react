@@ -4,7 +4,7 @@ import { Button, Form, Col, Row } from "react-bootstrap";
 import Modal from "react-modal";
 
 Modal.setAppElement("#root");
-export default function LocationCard(props) {
+export default function LocationModal(props) {
   const [state, setState] = useState({
     id: 0,
     city: "",
@@ -98,10 +98,10 @@ export default function LocationCard(props) {
           content: {
             position: "absolute",
             width: "600px",
-            height: "235px",
+            height: "240px",
             top: "30%",
             margin: "0 auto",
-            border: "1px solid #ccc",
+            border: "3px solid #ccc",
             background: "#fff",
             overflow: "auto",
             WebkitOverflowScrolling: "touch",
@@ -111,7 +111,7 @@ export default function LocationCard(props) {
           },
         }}
       >
-        <div className="Location-Modal-Align-Center">
+        <div className="location-modal-align-center">
           <h2>{modalName}</h2>
         </div>
         <Form className="content">
@@ -149,7 +149,7 @@ export default function LocationCard(props) {
             </Col>
           </Form.Group>
 
-          <div className="Location-Modal-Align-Center">
+          <div className="location-modal-align-center">
             <Button
               className="btn-6"
               onClick={handleSubmit}

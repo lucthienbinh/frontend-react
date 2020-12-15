@@ -10,7 +10,7 @@
 
 .btn {
     flex: 1 1 auto;
-    margin: 10px;
+    /* margin-top: 10px; */
     padding: 10px 15px;
     text-align: center;
     transition: 0.5s;
@@ -19,7 +19,7 @@
     /* text-shadow: 0px 0px 10px rgba(0,0,0,0.2); */
     box-shadow: 0 0 20px #eee;
     border-radius: 8px;
-    border: none;
+    border: none !important;
 }
 
 .btn:hover {
@@ -48,12 +48,18 @@
 }
 
 .btn-6 {
-    background-color: #772f1a;
-    background-image: linear-gradient(315deg, #772f1a 0%, #f2a65a 100%);
+    background-color: #ba9a8e;
+    background-image: linear-gradient(315deg, #ba9a8e 0%, #6f5242 74%);
 }
   
 .btn-7 {
-    background-color: #d2d8d6;
-    background-image: linear-gradient(315deg, #868f96 0%, #596164 100%);
-    color: #000;
+    background-color: #ffffff;
+    background-image: linear-gradient(315deg, #ffffff 0%, #cc9a6b 74%);
+}
+
+.btn-8 {
+    background-color: #f7b42c;
+    background-image: linear-gradient(315deg, #f7b42c 0%, #fc575e 100%);
+    
+    
 }

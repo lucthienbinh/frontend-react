@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect,
 } from 'react-router-dom';
 import {useCookies} from 'react-cookie';
 
@@ -14,6 +13,8 @@ import CustomerList from '../Auth/Admin/Customer/List';
 import CustomerDetail from '../Auth/Admin/Customer/Detail';
 import CustomerCreate from '../Auth/Admin/Customer/Create';
 import CustomerUpdate from '../Auth/Admin/Customer/Update';
+
+import LocationList from '../Auth/Admin/Location/List';
 
 export default function App() {
   const [cookies] = useCookies(['csrf']);
@@ -35,6 +36,7 @@ export default function App() {
           <Route exact path="/customer/detail/:id" component={CustomerDetail} />
           <Route exact path="/customer/create" component={CustomerCreate} />
           <Route exact path="/customer/update/:id" component={CustomerUpdate} />
+          <Route exact path="/delivery-location/list" component={LocationList} />
         </Switch>
       </Router>
     );

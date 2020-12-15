@@ -3,21 +3,17 @@ import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
 export default function CustomerCard(props) {
-  let detailLink = "/customer/detail/" + props.customer.id;
   let updateLink = "/customer/update/" + props.customer.id;
   let deleteLinkAPI = "/api/customer/delete/" + props.customer.id;
   return (
     <div>
       <p>ID: {props.customer.id}</p>
-      <p>Name: {props.customer.name}</p>
+      <p>Name: {props.customer.name}</p> 
       <p>Age: {props.customer.age}</p>
       <p>Phone: {props.customer.phone}</p>
       <p>Gender: {props.customer.gender}</p>
       <p>Address: {props.customer.address}</p>
       <p>Point: {props.customer.point}</p>
-      <Link to={detailLink} className="btn btn-1">
-        Detail
-      </Link>
       <Link to={updateLink} className="btn btn-2">
         Update
       </Link>

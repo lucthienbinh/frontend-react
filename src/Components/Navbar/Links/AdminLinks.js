@@ -32,12 +32,12 @@ const AdminLinks = [
         dropDown: true,
         childrens: [
             {
-                href: "/location/list",
-                name: "Employee list",
+                href: "/delivery-location/list",
+                name: "Location list",
             },
             {
-                href: "/location/create",
-                name: "Create employee",
+                href: "/delivery-location/create",
+                name: "Create location",
             },
         ]
     },

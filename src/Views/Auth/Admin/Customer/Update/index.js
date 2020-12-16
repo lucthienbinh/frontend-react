@@ -39,11 +39,14 @@ export default function CustomerUpdate() {
     const requestOptions = {
       headers: {
         "X-CSRF-Token": cookies.csrf,
+        Accept: "application/json",
       },
+      mode: "cors",
       credentials: "include",
+      method: "GET",
     };
 
-    fetch("/api/customer/id/" + id, requestOptions)
+    fetch(process.env.REACT_APP_API_URL + `/api/customer/id/${id}`, requestOptions)
       .then((res) => {
         setIsLoading(false);
         if (res.status !== 200) {
@@ -53,7 +56,7 @@ export default function CustomerUpdate() {
       })
       .then((json) => {
         console.log(json);
-        setState(() => {return{...json.customer_info}})
+        setState(() => { return { ...json.customer_info } })
       })
       .catch((err) => {
         console.log(err);
@@ -69,12 +72,13 @@ export default function CustomerUpdate() {
         "Content-Type": "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
+      mode: "cors",
       credentials: "include",
       method: "PUT",
       body: JSON.stringify(state),
     };
 
-    return fetch("/api/customer/update/" + id, requestOptions)
+    return fetch(process.env.REACT_APP_API_URL + "/api/customer/update/" + id, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");

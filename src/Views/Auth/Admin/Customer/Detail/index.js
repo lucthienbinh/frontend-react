@@ -34,11 +34,13 @@ export default function CustomerDetail() {
     const requestOptions = {
       headers: {
         "X-CSRF-Token": cookies.csrf,
+        Accept: "application/json",
       },
       credentials: "include",
+      mode: "cors",
     };
 
-    fetch(`/api/customer/id/${id}`, requestOptions)
+    fetch(process.env.REACT_APP_API_URL + `/api/customer/id/${id}`, requestOptions)
       .then((res) => {
         setIsLoading(false);
         if (res.status !== 200) {
@@ -125,7 +127,7 @@ export default function CustomerDetail() {
           </Form.Group>
 
           <Form.Group as={Row}>
-            <Col sm={{ span: 1,offset: 2 }}>
+            <Col sm={{ span: 1, offset: 2 }}>
               <Button
                 className="btn-7"
                 onClick={() => history.push("/customer/list")}

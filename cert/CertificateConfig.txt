@@ -1,0 +1,36 @@
+1. Run command: bash <(wget -qO- https://gist.github.com/w35l3y/5bb7fe8508d576472136f35428019177/raw/local-cert-generator.sh)
+
+Country Name (2 letter code) [AU]:VN
+State or Province Name (full name) [Some-State]:HCM
+Locality Name (eg, city) []:Tran Hung Dao
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Move Nice 
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:Move Nice
+Email Address []:noreply@movenice.com
+
+
+2. Import rootCA.pem and server.pem to Chrome
+Đầu tiên, mở Google Chrome và truy cập vào đường dẫn sau: chrome://settings/certificates. 
+Sau đó, bạn chọn tab Authorities và nhấp vào IMPORT rồi chọn file rootCA.pem mà chúng ta vừa tạo ban nãy. 
+Sau khi chọn file đó, chúng ta sẽ có màn hình sau:
+Tick 3 checkbox
+
+3. Modified package.json
+"start": "HTTPS=true react-scripts start",
+"prestart": "cp -f ./cert/server.pem ./node_modules/webpack-dev-server/ssl",
+
+Bug: 
+1. Error: ENOSPC: System limit for number of file watchers reached
+Modify the number of system monitoring files
+
+Ubuntu
+
+sudo gedit /etc/sysctl.conf
+
+Add a line at the bottom
+
+fs.inotify.max_user_watches=524288
+
+Then save and exit!
+
+sudo sysctl -p

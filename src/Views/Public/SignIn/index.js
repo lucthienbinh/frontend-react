@@ -20,13 +20,16 @@ export default function Login() {
 
     const requestOptions = {
       headers: {
+        "Content-Type": "application/json",
         Accept: "application/json",
+        Origin: process.env.REACT_APP_API_URL,
       },
+      credentials: "include",
       body: JSON.stringify(formObj),
       method: "POST",
     };
 
-    return fetch("/user-auth/web/loginJSON", requestOptions)
+    return fetch(process.env.REACT_APP_API_URL + "/user-auth/web/loginJSON", requestOptions)
       .then((res) => {
         console.log(res);
         if (res.status !== 200) {
@@ -35,7 +38,7 @@ export default function Login() {
         return res.json();
       })
       .then((data) => {
-        history.push("customer/list");
+        console.log(data);
       })
       .catch((err) => {
         console.log(err);
@@ -48,7 +51,7 @@ export default function Login() {
         <Form className="content" onSubmit={(e) => handleSubmit(e)}>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" name="email" id placeholder="Enter email" />
+            <Form.Control type="email" name="email" placeholder="Enter email" />
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>

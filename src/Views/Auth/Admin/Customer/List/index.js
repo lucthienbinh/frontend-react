@@ -23,12 +23,16 @@ export default function CustomerList() {
     setIsLoading(true);
     const requestOptions = {
       headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
+      mode: "cors",
       credentials: "include",
+      method: "GET",
     };
 
-    return await fetch("/api/customer/list", requestOptions)
+    return await fetch(process.env.REACT_APP_API_URL+"/api/customer/list", requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -49,23 +53,27 @@ export default function CustomerList() {
       headers: {
         "X-CSRF-Token": cookies.csrf,
       },
+      mode: "cors",
       credentials: "include",
       method: "DELETE",
     };
 
-    fetch(deleteLinkAPI, requestOptions)
+    fetch(process.env.REACT_APP_API_URL + deleteLinkAPI, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
         }
         return res.json();
       })
-      .then((data) => console.log(data))
+      .then((data) => {
+        console.log(data)
+        return fetchCustomerList();
+      })
       .catch((err) => {
         console.log(err);
       });
 
-    return fetchCustomerList();
+    
   };
 
   const actionLink = {

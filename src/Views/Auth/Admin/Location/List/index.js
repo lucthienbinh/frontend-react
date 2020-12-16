@@ -27,12 +27,20 @@ export default function LocationList() {
     setIsLoading(true);
     const requestOptions = {
       headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
         "X-CSRF-Token": cookies.csrf,
+        Origin: process.env.REACT_APP_API_URL,
       },
+      mode: "no-cors",
       credentials: "include",
+      method: "GET",
     };
 
-    return await fetch("/api/delivery-location/list", requestOptions)
+    return await fetch(
+      process.env.REACT_APP_API_URL + "/api/delivery-location/list",
+      requestOptions
+    )
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -85,7 +93,7 @@ export default function LocationList() {
       method: "DELETE",
     };
 
-    fetch('/api/delivery-location/delete/' + id, requestOptions)
+    fetch("/api/delivery-location/delete/" + id, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -99,7 +107,6 @@ export default function LocationList() {
       .catch((err) => {
         console.log(err);
       });
-
   };
 
   const submitCreate = (locationModal) => {
@@ -114,7 +121,7 @@ export default function LocationList() {
       body: JSON.stringify(locationModal),
     };
 
-    fetch('/api/delivery-location/create' , requestOptions)
+    fetch("/api/delivery-location/create", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
           return Promise.reject("Bad request sent to server!");
@@ -142,7 +149,7 @@ export default function LocationList() {
       body: JSON.stringify(locationModal),
     };
 
-    fetch('/api/delivery-location/update/' + locationModal.id, requestOptions)
+    fetch("/api/delivery-location/update/" + locationModal.id, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -166,8 +173,8 @@ export default function LocationList() {
 
   const modalButton = {
     submitCreate: submitCreate,
-    submitUpdate: submitUpdate, 
-  }
+    submitUpdate: submitUpdate,
+  };
 
   if (isLoading) {
     return <Loading />;
@@ -176,7 +183,12 @@ export default function LocationList() {
       <AdminLayout>
         <div>
           <p className="location-list-header">Delivery location list</p>
-          <Button className="location-list-create-button" onClick={buttonCreate}>Create</Button>
+          <Button
+            className="location-list-create-button"
+            onClick={buttonCreate}
+          >
+            Create
+          </Button>
         </div>
         <TableModal
           columns={COLUMNS}

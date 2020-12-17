@@ -18,6 +18,7 @@ import LocationList from '../Auth/Admin/Location/List';
 
 import EmployeeList from '../Auth/Admin/Employee/List';
 import EmployeeDetail from '../Auth/Admin/Employee/Detail';
+import EmployeeCreate from '../Auth/Admin/Employee/Create';
 
 export default function App() {
   const [cookies] = useCookies(['csrf']);
@@ -42,6 +43,7 @@ export default function App() {
           <Route exact path="/delivery-location/list" component={LocationList} />
           <Route exact path="/employee/list" component={EmployeeList} />
           <Route exact path="/employee/detail/:id" component={EmployeeDetail} />
+          <Route exact path="/employee/create" component={EmployeeCreate} />
         </Switch>
       </Router>
     );

@@ -29,7 +29,7 @@ export default function Login() {
       method: "POST",
     };
 
-    return fetch(process.env.REACT_APP_API_URL + "/user-auth/web/loginJSON", requestOptions)
+    return fetch(process.env.REACT_APP_API_URL + "/web-auth/loginJSON", requestOptions)
       .then((res) => {
         console.log(res);
         if (res.status !== 200) {

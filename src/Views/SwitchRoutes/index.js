@@ -16,6 +16,8 @@ import CustomerUpdate from '../Auth/Admin/Customer/Update';
 
 import LocationList from '../Auth/Admin/Location/List';
 
+import EmployeeList from '../Auth/Admin/Employee/List';
+
 export default function App() {
   const [cookies] = useCookies(['csrf']);
   if (typeof cookies.csrf === 'undefined') {
@@ -37,6 +39,7 @@ export default function App() {
           <Route exact path="/customer/create" component={CustomerCreate} />
           <Route exact path="/customer/update/:id" component={CustomerUpdate} />
           <Route exact path="/delivery-location/list" component={LocationList} />
+          <Route exact path="/employee/list" component={EmployeeList} />
         </Switch>
       </Router>
     );

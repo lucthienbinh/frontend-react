@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./index.css";
 import { Button, Form, Col, Row, InputGroup } from "react-bootstrap";
+import Select from 'react-select'
 import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import bsCustomFileInput from 'bs-custom-file-input';
 
+import Loading from "../../../../Loading";
 import AdminLayout from "../../../../Layouts/AdminLayout";
 
 export default function EmployeeCreate() {
@@ -12,11 +14,17 @@ export default function EmployeeCreate() {
   const [cookies] = useCookies(["csrf"]);
 
   useEffect(() => {
-    bsCustomFileInput.init()
+    fetchCreateFormData();
     return () => {
       bsCustomFileInput.destroy()
     }
   }, [])
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [picture, setPicture] = useState([]);
+  const [etOptions, setEtOptions] = useState([])
+  const formRef = useRef();
 
   const [state, setState] = useState({
     email: "admin123@gmail.com",
@@ -28,11 +36,9 @@ export default function EmployeeCreate() {
     gender: "male",
     avatar: "",
     identity_card: "24873t2716653826325",
-    employee_type_id: 3,
+    employee_type_id: 0,
     delivery_location_id: 1,
   });
-
-  const fileFormRef = useRef();
 
   const email = state.email;
   const password = state.password;
@@ -46,25 +52,58 @@ export default function EmployeeCreate() {
   const employee_type_id = state.employee_type_id;
   const delivery_location_id = state.delivery_location_id;
 
+  const fetchCreateFormData = async () => {
+    setIsLoading(true);
+    const requestOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-CSRF-Token": cookies.csrf,
+      },
+      mode: "cors",
+      credentials: "include",
+      method: "GET",
+    };
+
+    return await fetch(process.env.REACT_APP_API_URL+"/api/employee/create-form-data", requestOptions)
+      .then((res) => {
+        if (res.status !== 200) {
+          return Promise.reject("Bad request sent to server!");
+        }
+        return res.json();
+      })
+      .then((json) => {
+        setEtOptions(json.et_options);
+        setIsLoading(false);
+        bsCustomFileInput.init()
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = (typeof event.target === "undefined") ? event : event.target;
     setState((prevState) => {
       return { ...prevState, [name]: value };
     });
+    console.log(state)
   };
 
-  const resetForm = () => {
-    fileFormRef.current.reset()
-  }
+  const onChangePicture = e => {
+    setPicture([...picture, e.target.files[0]]);
+  };
 
-  const submitImage = () => {
-    const formData = new FormData(fileFormRef.current);
-    // Source code: https://stackoverflow.com/questions/18606305/accessing-formdata-values
-    let formObj = {};
-    for (var pair of formData.entries()) {
-      formObj[pair[0]] = pair[1]
-    }
-    console.log(formObj)
+  
+  const resetForm = () => {
+    formRef.current.reset()
+    setPicture([]);
+  };
+
+  const submitImage = async () => {
+    let formData = new FormData();
+    formData.append("file", picture[0],"image.jpg");
+    
     const requestOptions = {
       headers: {
         "X-CSRF-Token": cookies.csrf,
@@ -73,7 +112,7 @@ export default function EmployeeCreate() {
       mode: "cors",
       credentials: "include",
       method: "POST",
-      body: new FormData(fileFormRef.current),
+      body: formData,
     };
 
     return fetch(process.env.REACT_APP_API_URL + "/api/employee/upload/image", requestOptions)
@@ -129,12 +168,13 @@ export default function EmployeeCreate() {
       });
   };
 
+  if (isLoading) {
+    return <Loading />;
+  } else {
   return (
     <AdminLayout>
       <p className="employee-create-header">Create employee</p>
-
-      <Form ref={fileFormRef} className="content" onSubmit={(e) => handleSubmit(e)}>
-
+      <Form ref={formRef} className="content" onSubmit={(e) => handleSubmit(e)}>
         <Form.Group as={Row} controlId="formHorizontalAvatar">
           <Form.Label column sm={2}>
             Avatar
@@ -145,6 +185,7 @@ export default function EmployeeCreate() {
                 name="file"
                 id="custom-file"
                 label="Select file"
+                onChange={onChangePicture}
                 custom
               />
               <InputGroup.Append>
@@ -291,6 +332,45 @@ export default function EmployeeCreate() {
           </Form.Group>
         </fieldset>
 
+        <Form.Group as={Row} controlId="formHorizontalIdentityCard">
+          <Form.Label column sm={2}>
+            Identity card
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control
+              type="text"
+              name="identity_card"
+              placeholder="Identity Card"
+              value={identity_card}
+              onChange={handleChange}
+              required
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="formHorizontalSelectEmployeeType">
+          <Form.Label column sm={2}>Employee type</Form.Label>
+          <Col sm={10}>
+            <Select options={etOptions} onChange={handleChange}/>
+          </Col>
+
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="formHorizontalSelectDeliveryLocation">
+          <Form.Label column sm={2}>Delivery location</Form.Label>
+          <Col sm={10}>
+            <Form.Control as="select" custom>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </Form.Control>
+          </Col>
+
+        </Form.Group>
+
+
         <Form.Group as={Row}>
           <Col sm={{ span: 1, offset: 2 }}>
             <Button className="btn-6" type="submit">
@@ -314,4 +394,5 @@ export default function EmployeeCreate() {
       </Form>
     </AdminLayout>
   );
+  }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./index.css";
 import { Button, Form, Col, Row, InputGroup } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
 // Import both component for file upload
@@ -14,12 +14,13 @@ import Select from 'react-select'
 import Loading from "../../../../Loading";
 import AdminLayout from "../../../../Layouts/AdminLayout";
 
-export default function EmployeeCreate() {
+export default function EmployeeUpdate() {
   const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
+  let { id } = useParams();
 
   useEffect(() => {
-    fetchCreateFormData();
+    fetchUpdateFormData();
     return () => {
       bsCustomFileInput.destroy()
     }
@@ -30,19 +31,21 @@ export default function EmployeeCreate() {
   const [picture, setPicture] = useState([]);
   const [etOptions, setEtOptions] = useState([])
   const [dlOptions, setDlOptions] = useState([])
+  const [etSelected, setEtSelected] = useState({})
+  const [dlSelected, setDlSelected] = useState({})
   const formRef = useRef();
 
   const [state, setState] = useState({
-    email: "admin123@gmail.com",
-    password: "1111111111",
-    name: "employee Hai",
-    address: "123 tran nao",
-    phone: 909888999,
-    age: 20,
-    gender: "male",
+    email: "",
+    password: "",
+    name: "",
+    address: "",
+    phone: 0,
+    age: 0,
+    gender: "",
     avatar: "",
-    identity_card: "24873t2716653826325",
-    employee_type_id: 2,
+    identity_card: "",
+    employee_type_id: 0,
     delivery_location_id: 0,
   });
 
@@ -62,7 +65,7 @@ export default function EmployeeCreate() {
     console.log('done', file);
   };
 
-  const fetchCreateFormData = async () => {
+  const fetchUpdateFormData = async () => {
     setIsLoading(true);
     const requestOptions = {
       headers: {
@@ -75,7 +78,7 @@ export default function EmployeeCreate() {
       method: "GET",
     };
 
-    return await fetch(process.env.REACT_APP_API_URL+"/api/employee/create-form-data", requestOptions)
+    await fetch(process.env.REACT_APP_API_URL + `/api/employee/update-form-data/${id}`, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -83,14 +86,31 @@ export default function EmployeeCreate() {
         return res.json();
       })
       .then((json) => {
+        console.log(json);
+        setState(json.employee_info);
         setEtOptions(json.et_options);
         setDlOptions(json.dl_options);
+        json.et_options.map((option) => {
+          if (option.value === json.employee_info.employee_type_id) {
+            setEtSelected(option)
+            console.log(option)
+          }
+          return 1;
+        });
+        json.dl_options.map((option) => {
+          if (option.value === json.employee_info.delivery_location_id) {
+            setDlSelected(option)
+            console.log(option)
+          }
+          return 1;
+        });
         setIsLoading(false);
         bsCustomFileInput.init()
       })
       .catch((err) => {
         console.log(err);
       });
+
   };
 
   const handleChange = (event) => {
@@ -186,7 +206,7 @@ export default function EmployeeCreate() {
   } else {
   return (
     <AdminLayout>
-      <p className="employee-create-header">Create employee</p>
+      <p className="employee-create-header">Update employee</p>
       <Form ref={formRef} className="content" onSubmit={(e) => handleSubmit(e)}>
         <Form.Group as={Row} controlId="formHorizontalAvatar">
           <Form.Label column sm={2}>
@@ -207,39 +227,6 @@ export default function EmployeeCreate() {
                 <Button className="btn btn-10" onClick={resetForm}>Remove</Button>
               </InputGroup.Append>
             </InputGroup>
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalEmail">
-          <Form.Label column sm={2}>
-            Email
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={email}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalPassword">
-          <Form.Label column sm={2}>
-            Password
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={password}
-              onChange={handleChange}
-              required
-              minLength="10"
-            />
           </Col>
         </Form.Group>
 
@@ -366,7 +353,7 @@ export default function EmployeeCreate() {
         <Form.Group as={Row} controlId="formHorizontalSelectEmployeeType">
           <Form.Label column sm={2}>Employee type</Form.Label>
           <Col sm={10}>
-            <Select options={etOptions} onChange={handleChange} defaultValue={{ name: "employee_type_id" ,label: "Input staff", value: 2 }}/>
+            <Select options={etOptions} onChange={handleChange} defaultValue={etSelected}/>
           </Col>
 
         </Form.Group>
@@ -374,7 +361,7 @@ export default function EmployeeCreate() {
         <Form.Group as={Row} controlId="formHorizontalSelectDeliveryLocation">
           <Form.Label column sm={2}>Delivery location</Form.Label>
           <Col sm={10}>
-          <Select options={dlOptions} onChange={handleChange} />
+          <Select options={dlOptions} onChange={handleChange} defaultValue={dlSelected}/>
           </Col>
         </Form.Group>
 

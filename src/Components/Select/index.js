@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+// Source code: https://codesandbox.io/s/react-select-v2-required-input-3xvvb
+
 const noop = () => {
   // no operation (do nothing real quick)
 };

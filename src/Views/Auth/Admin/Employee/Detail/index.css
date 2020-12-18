@@ -3,3 +3,7 @@
     padding: 1rem;
     font-size: 3rem;
 }
+
+.employee-avatar {
+    max-height: 200px;
+}

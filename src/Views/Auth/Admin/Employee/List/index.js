@@ -52,6 +52,7 @@ export default function EmployeeList() {
     const requestOptions = {
       headers: {
         "X-CSRF-Token": cookies.csrf,
+        Accept: "application/json",
       },
       mode: "cors",
       credentials: "include",

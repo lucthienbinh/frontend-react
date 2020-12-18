@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
-import { Button, Form, Col, Row } from "react-bootstrap";
+import { Button, Form, Col, Row, Image } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 
 import AdminLayout from "../../../../Layouts/AdminLayout";
@@ -50,7 +50,6 @@ export default function EmployeeDetail() {
 
     fetch(process.env.REACT_APP_API_URL + `/api/employee/id/${id}`, requestOptions)
       .then((res) => {
-        setIsLoading(false);
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
         }
@@ -58,6 +57,7 @@ export default function EmployeeDetail() {
       })
       .then((json) => {
         setState(json.employee_info);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -71,6 +71,15 @@ export default function EmployeeDetail() {
       <AdminLayout>
         <p className="customer-detail-header">Employee detail</p>
         <Form className="content">
+          <Form.Group as={Row} controlId="formHorizontalID">
+            <Form.Label column sm={2}>
+              Avatar
+            </Form.Label>
+            <Col sm={10}>
+              <Image className="employee-avatar" src={process.env.REACT_APP_API_IMAGE_URL + "/" + avatar} rounded />
+            </Col>
+          </Form.Group>
+
           <Form.Group as={Row} controlId="formHorizontalID">
             <Form.Label column sm={2}>
               ID

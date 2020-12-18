@@ -1,13 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./index.css";
 import { Button, Form, Col, Row, InputGroup } from "react-bootstrap";
-import Select from 'react-select'
 import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import bsCustomFileInput from 'bs-custom-file-input';
+// Import both component for select
+import BaseSelect from 'react-select'
+import FixRequiredSelect from "../../../../../Components/Select";
 
 import Loading from "../../../../Loading";
 import AdminLayout from "../../../../Layouts/AdminLayout";
+
+const Select = props => (
+  <FixRequiredSelect
+    {...props}
+    SelectComponent={BaseSelect}
+    options={props.options}
+  />
+);
 
 export default function EmployeeCreate() {
   const history = useHistory();
@@ -24,6 +34,7 @@ export default function EmployeeCreate() {
 
   const [picture, setPicture] = useState([]);
   const [etOptions, setEtOptions] = useState([])
+  const [dlOptions, setDlOptions] = useState([])
   const formRef = useRef();
 
   const [state, setState] = useState({
@@ -37,7 +48,7 @@ export default function EmployeeCreate() {
     avatar: "",
     identity_card: "24873t2716653826325",
     employee_type_id: 0,
-    delivery_location_id: 1,
+    delivery_location_id: 0,
   });
 
   const email = state.email;
@@ -74,6 +85,7 @@ export default function EmployeeCreate() {
       })
       .then((json) => {
         setEtOptions(json.et_options);
+        setDlOptions(json.dl_options);
         setIsLoading(false);
         bsCustomFileInput.init()
       })
@@ -94,7 +106,6 @@ export default function EmployeeCreate() {
     setPicture([...picture, e.target.files[0]]);
   };
 
-  
   const resetForm = () => {
     formRef.current.reset()
     setPicture([]);
@@ -115,33 +126,22 @@ export default function EmployeeCreate() {
       body: formData,
     };
 
-    return fetch(process.env.REACT_APP_API_URL + "/api/employee/upload/image", requestOptions)
+    return await fetch(process.env.REACT_APP_API_URL + "/api/employee/upload/image", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
           return Promise.reject('Bad request sent to server!');
         }
         return res.json();
       })
-      .then(data => console.log(data))
-      .catch((err) => {
-        console.log(err);
-      });
+      .then(data => { 
+        setState((prevState) => {
+          return { ...prevState, avatar: data.filename };
+        });
+      })
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const requestImageOptions = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "X-CSRF-Token": cookies.csrf,
-      },
-      mode: "cors",
-      credentials: "include",
-      method: "POST",
-      body: JSON.stringify(state),
-    };
 
     const requestOptions = {
       headers: {
@@ -155,7 +155,10 @@ export default function EmployeeCreate() {
       body: JSON.stringify(state),
     };
 
-    return fetch(process.env.REACT_APP_API_URL + "/api/employee/create", requestOptions)
+    return submitImage()
+      .then(() => {
+        return fetch(process.env.REACT_APP_API_URL + "/api/employee/create", requestOptions);
+      })
       .then((res) => {
         if (res.status !== 201) {
           return Promise.reject('Bad request sent to server!');
@@ -187,6 +190,7 @@ export default function EmployeeCreate() {
                 label="Select file"
                 onChange={onChangePicture}
                 custom
+                required
               />
               <InputGroup.Append>
                 <Button className="btn btn-10" onClick={resetForm}>Remove</Button>
@@ -351,7 +355,7 @@ export default function EmployeeCreate() {
         <Form.Group as={Row} controlId="formHorizontalSelectEmployeeType">
           <Form.Label column sm={2}>Employee type</Form.Label>
           <Col sm={10}>
-            <Select options={etOptions} onChange={handleChange}/>
+            <Select options={etOptions} onChange={handleChange} isSearchable required/>
           </Col>
 
         </Form.Group>
@@ -359,17 +363,9 @@ export default function EmployeeCreate() {
         <Form.Group as={Row} controlId="formHorizontalSelectDeliveryLocation">
           <Form.Label column sm={2}>Delivery location</Form.Label>
           <Col sm={10}>
-            <Form.Control as="select" custom>
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-            </Form.Control>
+          <Select options={dlOptions} onChange={handleChange} isSearchable required/>
           </Col>
-
         </Form.Group>
-
 
         <Form.Group as={Row}>
           <Col sm={{ span: 1, offset: 2 }}>
@@ -381,12 +377,6 @@ export default function EmployeeCreate() {
           <Col sm={{ span: 1 }}>
             <Button className="btn-7" onClick={() => history.push("/employee/list")}>
               Cancel
-            </Button>
-          </Col>
-
-          <Col sm={{ span: 1, offset: 2 }}>
-            <Button className="btn-6" onClick={submitImage}>
-              Create
             </Button>
           </Col>
 

@@ -22,6 +22,10 @@ const AdminLinks = [
                 name: "Employee list",
             },
             {
+                href: "/employee-type/list",
+                name: "Employee type list",
+            },
+            {
                 href: "/delivery-location/list",
                 name: "Delivery location list",
             },

@@ -36,8 +36,6 @@ export default function EmployeeUpdate() {
   const formRef = useRef();
 
   const [state, setState] = useState({
-    email: "",
-    password: "",
     name: "",
     address: "",
     phone: 0,
@@ -49,21 +47,12 @@ export default function EmployeeUpdate() {
     delivery_location_id: 0,
   });
 
-  const email = state.email;
-  const password = state.password;
   const name = state.name;
   const address = state.address;
   const phone = state.phone;
   const age = state.age;
   const gender = state.gender;
-  const avatar = state.avatar;
   const identity_card = state.identity_card;
-  const employee_type_id = state.employee_type_id;
-  const delivery_location_id = state.delivery_location_id;
-
-  const onChange = (file) => {
-    console.log('done', file);
-  };
 
   const fetchUpdateFormData = async () => {
     setIsLoading(true);
@@ -86,21 +75,18 @@ export default function EmployeeUpdate() {
         return res.json();
       })
       .then((json) => {
-        console.log(json);
         setState(json.employee_info);
         setEtOptions(json.et_options);
         setDlOptions(json.dl_options);
         json.et_options.map((option) => {
           if (option.value === json.employee_info.employee_type_id) {
             setEtSelected(option)
-            console.log(option)
           }
           return 1;
         });
         json.dl_options.map((option) => {
           if (option.value === json.employee_info.delivery_location_id) {
             setDlSelected(option)
-            console.log(option)
           }
           return 1;
         });
@@ -118,7 +104,6 @@ export default function EmployeeUpdate() {
     setState((prevState) => {
       return { ...prevState, [name]: value };
     });
-    console.log(state);
   };
 
   const onChangePicture = e => {
@@ -132,42 +117,47 @@ export default function EmployeeUpdate() {
 
   const submitImage = async () => {
 
-    const config = {
-      file: picture[0],
-      maxSize: 300
-    };
-    const resizedImage = await ResizeImage(config)
-
-    console.log(picture[0].name);
-    let formData = new FormData();
-    formData.append("file", resizedImage, picture[0].name);
+    //Source code: https://stackoverflow.com/a/37953610
+    if (picture && picture.length) {
+      const config = {
+        file: picture[0],
+        maxSize: 300
+      };
+      const resizedImage = await ResizeImage(config)
+  
+      let formData = new FormData();
+      formData.append("file", resizedImage, picture[0].name);
+      
+      const requestOptions = {
+        headers: {
+          "X-CSRF-Token": cookies.csrf,
+          Accept: "application/json",
+        },
+        mode: "cors",
+        credentials: "include",
+        method: "POST",
+        body: formData,
+      };
+  
+      return await fetch(process.env.REACT_APP_API_URL + "/api/employee/upload/image", requestOptions)
+        .then((res) => {
+          if (res.status !== 201) {
+            return Promise.reject('Bad request sent to server!');
+          }
+          return res.json();
+        })
+        .then(async (data) => { 
+          console.log(data.filename)
+          // Keep in mind this a very dangerous way to change state of component!!!!!
+          state.avatar = data.filename;
+          setState((prevState) => {
+            return { ...prevState, avatar: data.filename };
+          });
+        })
+    } else {
+      return await console.log();
+    }
     
-    const requestOptions = {
-      headers: {
-        "X-CSRF-Token": cookies.csrf,
-        Accept: "application/json",
-      },
-      mode: "cors",
-      credentials: "include",
-      method: "POST",
-      body: formData,
-    };
-
-    return await fetch(process.env.REACT_APP_API_URL + "/api/employee/upload/image", requestOptions)
-      .then((res) => {
-        if (res.status !== 201) {
-          return Promise.reject('Bad request sent to server!');
-        }
-        return res.json();
-      })
-      .then(async (data) => { 
-        console.log(data.filename)
-        // Keep in mind this a very dangerous way to change state of component!!!!!
-        state.avatar = data.filename;
-        setState((prevState) => {
-          return { ...prevState, avatar: data.filename };
-        });
-      })
   };
 
   const handleSubmit = (e) => {
@@ -183,14 +173,14 @@ export default function EmployeeUpdate() {
           },
           mode: "cors",
           credentials: "include",
-          method: "POST",
+          method: "PUT",
           body: JSON.stringify(state),
         };
     
-        return fetch(process.env.REACT_APP_API_URL + "/api/employee/create", requestOptions);
+        return fetch(process.env.REACT_APP_API_URL + `/api/employee/update/${id}`, requestOptions);
       })
       .then((res) => {
-        if (res.status !== 201) {
+        if (res.status !== 200) {
           return Promise.reject('Bad request sent to server!');
         }
         return res.json();
@@ -221,7 +211,6 @@ export default function EmployeeUpdate() {
                 onChange={onChangePicture}
                 accept="image/*"
                 custom
-                required
               />
               <InputGroup.Append>
                 <Button className="btn btn-10" onClick={resetForm}>Remove</Button>
@@ -368,7 +357,7 @@ export default function EmployeeUpdate() {
         <Form.Group as={Row}>
           <Col sm={{ span: 1, offset: 2 }}>
             <Button className="btn-6" type="submit">
-              Create
+              Update
             </Button>
           </Col>
 

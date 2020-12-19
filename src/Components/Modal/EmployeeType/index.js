@@ -4,14 +4,12 @@ import { Button, Form, Col, Row } from "react-bootstrap";
 import Modal from "react-modal";
 
 Modal.setAppElement("#root");
-export default function LocationModal(props) {
+export default function EmployeeTypeModal(props) {
   const [state, setState] = useState({
     id: 0,
-    city: "",
-    district: 0,
+    name: "",
   });
-  const city = state.city;
-  const district = state.district;
+  const name = state.name;
 
   const [modalInfo, setModalInfo] = useState({
     modalName: "",
@@ -23,25 +21,24 @@ export default function LocationModal(props) {
   const submitButtonName = modalInfo.submitButtonName;
 
   useEffect(() => {
-    if (typeof props.location !== "undefined") {
+    if (typeof props.employeeType !== "undefined") {
       setState(() => {
         return {
-          id: props.location.id,
-          city: props.location.city,
-          district: props.location.district,
+          id: props.employeeType.id,
+          name: props.employeeType.name,
         };
       });
       if (props.disabledInput === true) {
         setModalInfo(() => {
           return {
-            modalName: "Delivery detail",
+            modalName: "Employee type detail",
             hideSubmitButton: true,
           };
         });
       } else {
         setModalInfo(() => {
           return {
-            modalName: "Update delivery",
+            modalName: "Update employee type",
             hideSubmitButton: false,
             submitButtonName: "Update",
           };
@@ -51,19 +48,18 @@ export default function LocationModal(props) {
       setState(() => {
         return {
           id: 0,
-          city: "",
-          district: "",
+          name: "",
         };
       });
       setModalInfo(() => {
         return {
-          modalName: "Create delivery",
+          modalName: "Create employee type",
           hideSubmitButton: false,
           submitButtonName: "Create",
         };
       });
     }
-  }, [props.location, props.disabledInput]);
+  }, [props.employeeType, props.disabledInput]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -73,7 +69,7 @@ export default function LocationModal(props) {
   };
 
   const handleSubmit = () => {
-    if (typeof props.location === "undefined") {
+    if (typeof props.employeeType === "undefined") {
       props.modalButton.submitCreate(state);
     } else {
       props.modalButton.submitUpdate(state);
@@ -97,9 +93,9 @@ export default function LocationModal(props) {
           },
           content: {
             position: "absolute",
-            width: "600px",
-            height: "240px",
-            top: "30%",
+            width: "400px",
+            height: "210px",
+            top: "40%",
             margin: "0 auto",
             border: "3px solid #ccc",
             background: "#fff",
@@ -111,20 +107,20 @@ export default function LocationModal(props) {
           },
         }}
       >
-        <div className="location-modal-align-center">
+        <div className="employee-type-modal-align-center">
           <h2>{modalName}</h2>
         </div>
         <Form className="content">
-          <Form.Group as={Row} controlId="formHorizontalEmail">
+          <Form.Group as={Row} controlId="formHorizontal">
             <Form.Label column sm={2}>
-              City
+              Type name
             </Form.Label>
             <Col sm={10}>
               <Form.Control
                 type="text"
-                name="city"
-                placeholder="City"
-                value={city}
+                name="name"
+                placeholder="name"
+                value={name}
                 onChange={handleChange}
                 required
                 disabled={props.disabledInput}
@@ -132,24 +128,7 @@ export default function LocationModal(props) {
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalPassword">
-            <Form.Label column sm={2}>
-              District
-            </Form.Label>
-            <Col sm={10}>
-              <Form.Control
-                type="number"
-                name="district"
-                placeholder="District"
-                value={district}
-                onChange={handleChange}
-                required
-                disabled={props.disabledInput}
-              />
-            </Col>
-          </Form.Group>
-
-          <div className="location-modal-align-center">
+          <div className="employee-type-modal-align-center">
             <Button
               className="btn-6"
               onClick={handleSubmit}

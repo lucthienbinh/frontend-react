@@ -53,10 +53,7 @@ export default function EmployeeCreate() {
   const phone = state.phone;
   const age = state.age;
   const gender = state.gender;
-  const avatar = state.avatar;
   const identity_card = state.identity_card;
-  const employee_type_id = state.employee_type_id;
-  const delivery_location_id = state.delivery_location_id;
 
   const onChange = (file) => {
     console.log('done', file);

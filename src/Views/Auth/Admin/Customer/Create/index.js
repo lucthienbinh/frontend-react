@@ -28,9 +28,9 @@ export default function CustomerCreate() {
   const gender = state.gender;
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value, valueAsNumber } = event.target;
     setState((prevState) => {
-      return { ...prevState, [name]: value };
+      return { ...prevState, [name]: valueAsNumber || value };
     });
   };
 

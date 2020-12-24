@@ -66,9 +66,9 @@ export default function LocationModal(props) {
   }, [props.location, props.disabledInput]);
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value, valueAsNumber } = event.target;
     setState((prevState) => {
-      return { ...prevState, [name]: value };
+      return { ...prevState, [name]: valueAsNumber || value };
     });
   };
 

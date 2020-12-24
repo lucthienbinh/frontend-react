@@ -29,9 +29,9 @@ export default function CustomerUpdate() {
   const gender = state.gender;
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value, valueAsNumber } = event.target;
     setState((prevState) => {
-      return { ...prevState, [name]: value };
+      return { ...prevState, [name]: valueAsNumber || value };
     });
   };
 
@@ -65,7 +65,7 @@ export default function CustomerUpdate() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    console.log(state);
     const requestOptions = {
       headers: {
         Accept: "application/json",
@@ -77,7 +77,7 @@ export default function CustomerUpdate() {
       method: "PUT",
       body: JSON.stringify(state),
     };
-
+    console.log(state);
     return fetch(process.env.REACT_APP_API_URL + "/api/customer/update/" + id, requestOptions)
       .then((res) => {
         if (res.status !== 200) {

@@ -91,11 +91,17 @@ export default function EmployeeCreate() {
   };
 
   const handleChange = (event) => {
-    const { name, value } = (typeof event.target === "undefined") ? event : event.target;
-    setState((prevState) => {
-      return { ...prevState, [name]: value };
-    });
-    console.log(state);
+    if (typeof event.target !== "undefined") {
+      const { name, value, valueAsNumber } = event.target;
+      setState((prevState) => {
+        return { ...prevState, [name]: valueAsNumber || value };
+      });
+    } else {
+      const { name, value } = event;
+      setState((prevState) => {
+        return { ...prevState, [name]: value };
+      });
+    }
   };
 
   const onChangePicture = e => {

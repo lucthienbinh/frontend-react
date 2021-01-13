@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 import AdminLayout from "../../../../Layouts/AdminLayout";
 import Loading from "../../../../Loading";
 
-export default function CustomerDetail() {
+export default function TransportTypeDetail() {
   const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
 
@@ -16,19 +16,23 @@ export default function CustomerDetail() {
   let { id } = useParams();
 
   const [state, setState] = useState({
-    name: "",
-    address: "",
-    phone: 0,
-    age: 0,
-    gender: "",
-    point: 0,
+    same_city: false,
+    location_one: "",
+    location_two: "",
+    bus_station_from: "",
+    bus_station_to: "",
+    long_ship_duration: 0,
+    long_ship_price: 0,
+    short_ship_price_per_km: 0,
   });
-  const name = state.name;
-  const address = state.address;
-  const phone = state.phone;
-  const age = state.age;
-  const gender = state.gender;
-  const point = state.point;
+  const same_city = state.same_city;
+  const location_one = state.location_one;
+  const location_two = state.location_two;
+  const bus_station_from = state.bus_station_from;
+  const bus_station_to = state.bus_station_to;
+  const long_ship_duration = state.long_ship_duration;
+  const long_ship_price = state.long_ship_price;
+  const short_ship_price_per_km = state.short_ship_price_per_km;
 
   useEffect(() => {
     const requestOptions = {
@@ -37,10 +41,9 @@ export default function CustomerDetail() {
         Accept: "application/json",
       },
       credentials: "include",
-      
     };
 
-    fetch(`/api/customer/id/${id}`, requestOptions)
+    fetch(`/api/transport-type/id/${id}`, requestOptions)
       .then((res) => {
         setIsLoading(false);
         if (res.status !== 200) {
@@ -49,12 +52,12 @@ export default function CustomerDetail() {
         return res.json();
       })
       .then((json) => {
-        setState(json.customer_info);
+        setState(json.transport_type_info);
       })
       .catch((err) => {
         console.log(err);
       });
-      // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   if (isLoading) {
@@ -62,7 +65,7 @@ export default function CustomerDetail() {
   } else {
     return (
       <AdminLayout>
-        <p className="customer-detail-header">Customer detail</p>
+        <p className="transport-type-detail-header">Transport Type detail</p>
         <Form className="content">
           <Form.Group as={Row} controlId="formHorizontalID">
             <Form.Label column sm={2}>
@@ -75,55 +78,73 @@ export default function CustomerDetail() {
 
           <Form.Group as={Row} controlId="formHorizontalName">
             <Form.Label column sm={2}>
-              Name
+              Same City
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={name} disabled={true} />
+              <Form.Control type="text" value={same_city} disabled={true} />
             </Col>
           </Form.Group>
 
           <Form.Group as={Row} controlId="formHorizontalAge">
             <Form.Label column sm={2}>
-              Age
+              Location one
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={age} disabled={true} />
+              <Form.Control type="text" value={location_one} disabled={true} />
             </Col>
           </Form.Group>
 
           <Form.Group as={Row} controlId="formHorizontalPhone">
             <Form.Label column sm={2}>
-              Phone
+              Location two
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={phone} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorizontalGender">
-            <Form.Label column sm={2}>
-              Gender
-            </Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={gender} disabled={true} />
+              <Form.Control type="text" value={location_two} disabled={true} />
             </Col>
           </Form.Group>
 
           <Form.Group as={Row} controlId="formHorizontalAddress">
             <Form.Label column sm={2}>
-              Address
+              Bus station 1 (long)
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={address} disabled={true} />
+              <Form.Control type="text" value={bus_station_from} disabled={true} />
             </Col>
           </Form.Group>
 
           <Form.Group as={Row} controlId="formHorizontalPoint">
             <Form.Label column sm={2}>
-              Point
+              Bus station 2 (long)
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={point} disabled={true} />
+              <Form.Control type="text" value={bus_station_to} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontalPoint">
+            <Form.Label column sm={2}>
+              Long ship duration
+            </Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={long_ship_duration} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontalPoint">
+            <Form.Label column sm={2}>
+              Long ship price
+            </Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={long_ship_price} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontalPoint">
+            <Form.Label column sm={2}>
+              Short ship price per Km
+            </Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={short_ship_price_per_km} disabled={true} />
             </Col>
           </Form.Group>
 
@@ -131,7 +152,7 @@ export default function CustomerDetail() {
             <Col sm={{ span: 1, offset: 2 }}>
               <Button
                 className="btn-7"
-                onClick={() => history.push("/customer/list")}
+                onClick={() => history.push("/transport-type/list")}
               >
                 Cancel
               </Button>

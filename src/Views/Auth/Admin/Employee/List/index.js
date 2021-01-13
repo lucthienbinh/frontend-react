@@ -17,6 +17,7 @@ export default function EmployeeList() {
 
   useEffect(() => {
     fetchEmployeeList();
+    // eslint-disable-next-line
   }, []);
 
   const fetchEmployeeList = async () => {
@@ -27,12 +28,12 @@ export default function EmployeeList() {
         Accept: "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "GET",
     };
 
-    return await fetch(process.env.REACT_APP_API_URL+"/api/employee/list", requestOptions)
+    return await fetch("/api/employee/list", requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -54,12 +55,12 @@ export default function EmployeeList() {
         "X-CSRF-Token": cookies.csrf,
         Accept: "application/json",
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "DELETE",
     };
 
-    fetch(process.env.REACT_APP_API_URL + deleteLinkAPI, requestOptions)
+    fetch(deleteLinkAPI, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");

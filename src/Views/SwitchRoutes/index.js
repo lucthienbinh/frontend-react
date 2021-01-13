@@ -22,6 +22,10 @@ import EmployeeDetail from '../Auth/Admin/Employee/Detail';
 import EmployeeCreate from '../Auth/Admin/Employee/Create';
 import EmployeeUpdate from '../Auth/Admin/Employee/Update';
 
+import TransportTypeList from '../Auth/Admin/TransportType/List';
+import TransportTypeDetail from '../Auth/Admin/TransportType/Detail';
+import TransportTypeCreate from '../Auth/Admin/TransportType/Create';
+
 export default function App() {
   const [cookies] = useCookies(['csrf']);
   if (typeof cookies.csrf === 'undefined') {
@@ -48,6 +52,9 @@ export default function App() {
           <Route exact path="/employee/detail/:id" component={EmployeeDetail} />
           <Route exact path="/employee/create" component={EmployeeCreate} />
           <Route exact path="/employee/update/:id" component={EmployeeUpdate} />
+          <Route exact path="/transport-type/list" component={TransportTypeList} />
+          <Route exact path="/transport-type/detail/:id" component={TransportTypeDetail} />
+          <Route exact path="/transport-type/create" component={TransportTypeCreate} />
         </Switch>
       </Router>
     );

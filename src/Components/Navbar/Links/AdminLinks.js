@@ -32,9 +32,19 @@ const AdminLinks = [
         ]
     },
     {
-        href: "/incomes",
-        name: "Thu nhập",
-    }
+        name: "Transport",
+        dropDown: true,
+        childrens: [
+            {
+                href: "/transport-type/list",
+                name: "Transport type list",
+            },
+            {
+                href: "/employee-type/list",
+                name: "Employee type list",
+            },
+        ]
+    },
 ];
 
 export default AdminLinks;

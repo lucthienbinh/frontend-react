@@ -2,12 +2,11 @@ import React from "react";
 import "./index.css";
 
 import { Button, Container, Form, ButtonGroup } from "react-bootstrap";
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import PublicLayout from "../../Layouts/PublicLayout";
 
 export default function Login() {
-  const history = useHistory();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,14 +21,14 @@ export default function Login() {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Origin: process.env.REACT_APP_API_URL,
       },
+      
       credentials: "include",
       body: JSON.stringify(formObj),
       method: "POST",
     };
 
-    return fetch(process.env.REACT_APP_API_URL + "/web-auth/loginJSON", requestOptions)
+    return fetch("/api/loginJSON", requestOptions)
       .then((res) => {
         console.log(res);
         if (res.status !== 200) {

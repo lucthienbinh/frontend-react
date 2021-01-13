@@ -5,7 +5,9 @@ import "./table.css";
 import { ColumnFilter } from "./ColumnFilter";
 
 export const TableModal = (props) => {
+  // eslint-disable-next-line
   const columns = useMemo(() => props.columns, []);
+  // eslint-disable-next-line
   const data = useMemo(() => props.data, []);
 
   const defaultColumn = React.useMemo(

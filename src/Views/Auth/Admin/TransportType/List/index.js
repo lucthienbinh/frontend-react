@@ -9,18 +9,18 @@ import AdminLayout from "../../../../Layouts/AdminLayout";
 import { TableLink } from "../../../../../Components/Table/TableLink";
 import { COLUMNS } from "./columns";
 
-export default function CustomerList() {
+export default function TransportTypeList() {
   const [cookies] = useCookies(["csrf"]);
 
-  const [customers, setCustomers] = useState([]);
+  const [transportTypes, setTransportTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchCustomerList();
+    fetchTransportTypeList();
     // eslint-disable-next-line
   }, []);
 
-  const fetchCustomerList = async () => {
+  const fetchTransportTypeList = async () => {
     setIsLoading(true);
     const requestOptions = {
       headers: {
@@ -33,7 +33,7 @@ export default function CustomerList() {
       method: "GET",
     };
 
-    return await fetch("/api/customer/list", requestOptions)
+    return await fetch("/api/transport-type/list", requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -41,7 +41,8 @@ export default function CustomerList() {
         return res.json();
       })
       .then((json) => {
-        setCustomers(json.customer_list);
+        console.log(json)
+        setTransportTypes(json.transport_type_list);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -68,7 +69,7 @@ export default function CustomerList() {
       })
       .then((data) => {
         console.log(data)
-        return fetchCustomerList();
+        return fetchTransportTypeList();
       })
       .catch((err) => {
         console.log(err);
@@ -78,10 +79,10 @@ export default function CustomerList() {
   };
 
   const actionLink = {
-    detailLink: "/customer/detail/",
-    updateLink: "/customer/update/",
-    deleteLink: "/api/customer/delete/",
-    handleDelete: handleDelete,
+    detailLink: "/transport-type/detail/",
+    updateLink: "/transport-type/update/",
+    deleteLink: "/api/transport-type/delete/",
+    handleDelete,
   };
 
   if (isLoading) {
@@ -90,10 +91,10 @@ export default function CustomerList() {
     return (
       <AdminLayout>
         <div>
-          <p className="customer-list-header">Customer list</p>
-          <Link to={'/customer/create'} className="btn customer-list-create-button">Create</Link>
+          <p className="transport-type-list-header">Transport Type list</p>
+          <Link to={'/transport-type/create'} className="btn transport-type-list-create-button">Create</Link>
         </div>
-        <TableLink columns={COLUMNS} data={customers} actionLink={actionLink} />
+        <TableLink columns={COLUMNS} data={transportTypes} actionLink={actionLink} />
       </AdminLayout>
     );
   }

@@ -43,13 +43,13 @@ export default function CustomerCreate() {
         "Content-Type": "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "POST",
       body: JSON.stringify(state),
     };
 
-    return fetch(process.env.REACT_APP_API_URL+"/api/customer/create", requestOptions)
+    return fetch("/api/customer/create", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
           return Promise.reject('Bad request sent to server!');

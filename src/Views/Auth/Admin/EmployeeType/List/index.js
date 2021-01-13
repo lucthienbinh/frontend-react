@@ -21,6 +21,7 @@ export default function EmployeeTypeList() {
 
   useEffect(() => {
     fetchEmployeeTypeList();
+    // eslint-disable-next-line
   }, []);
 
   const fetchEmployeeTypeList = async () => {
@@ -31,15 +32,12 @@ export default function EmployeeTypeList() {
         Accept: "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "GET",
     };
 
-    return await fetch(
-      process.env.REACT_APP_API_URL + "/api/employee-type/list",
-      requestOptions
-    )
+    return await fetch( "/api/employee-type/list", requestOptions )
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -88,13 +86,13 @@ export default function EmployeeTypeList() {
       headers: {
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "DELETE",
     };
 
 
-    fetch(process.env.REACT_APP_API_URL + "/api/employee-type/delete/" + id, requestOptions)
+    fetch("/api/employee-type/delete/" + id, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -117,13 +115,13 @@ export default function EmployeeTypeList() {
         "Content-Type": "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "POST",
       body: JSON.stringify(EmployeeTypeModal),
     };
 
-    fetch(process.env.REACT_APP_API_URL + "/api/employee-type/create", requestOptions)
+    fetch("/api/employee-type/create", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
           return Promise.reject("Bad request sent to server!");
@@ -146,13 +144,13 @@ export default function EmployeeTypeList() {
         "Content-Type": "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "PUT",
       body: JSON.stringify(EmployeeTypeModal),
     };
 
-    fetch(process.env.REACT_APP_API_URL + "/api/employee-type/update/" + EmployeeTypeModal.id, requestOptions)
+    fetch("/api/employee-type/update/" + EmployeeTypeModal.id, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");

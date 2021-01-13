@@ -45,10 +45,10 @@ export default function EmployeeDetail() {
         Accept: "application/json",
       },
       credentials: "include",
-      mode: "cors",
+      
     };
 
-    fetch(process.env.REACT_APP_API_URL + `/api/employee/id/${id}`, requestOptions)
+    fetch(`/api/employee/id/${id}`, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -62,6 +62,7 @@ export default function EmployeeDetail() {
       .catch((err) => {
         console.log(err);
       });
+      // eslint-disable-next-line
   }, []);
 
   if (isLoading) {

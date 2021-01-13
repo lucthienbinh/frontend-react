@@ -24,6 +24,7 @@ export default function EmployeeUpdate() {
     return () => {
       bsCustomFileInput.destroy()
     }
+    // eslint-disable-next-line
   }, [])
 
   const [isLoading, setIsLoading] = useState(true);
@@ -62,12 +63,12 @@ export default function EmployeeUpdate() {
         Accept: "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "GET",
     };
 
-    await fetch(process.env.REACT_APP_API_URL + `/api/employee/update-form-data/${id}`, requestOptions)
+    await fetch(`/api/employee/update-form-data/${id}`, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -140,13 +141,13 @@ export default function EmployeeUpdate() {
           "X-CSRF-Token": cookies.csrf,
           Accept: "application/json",
         },
-        mode: "cors",
+        
         credentials: "include",
         method: "POST",
         body: formData,
       };
   
-      return await fetch(process.env.REACT_APP_API_URL + "/api/employee/upload/image", requestOptions)
+      return await fetch("/api/employee/upload/image", requestOptions)
         .then((res) => {
           if (res.status !== 201) {
             return Promise.reject('Bad request sent to server!');
@@ -178,13 +179,13 @@ export default function EmployeeUpdate() {
             "Content-Type": "application/json",
             "X-CSRF-Token": cookies.csrf,
           },
-          mode: "cors",
+          
           credentials: "include",
           method: "PUT",
           body: JSON.stringify(state),
         };
     
-        return fetch(process.env.REACT_APP_API_URL + `/api/employee/update/${id}`, requestOptions);
+        return fetch(`/api/employee/update/${id}`, requestOptions);
       })
       .then((res) => {
         if (res.status !== 200) {

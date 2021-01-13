@@ -23,6 +23,7 @@ export default function EmployeeCreate() {
     return () => {
       bsCustomFileInput.destroy()
     }
+    // eslint-disable-next-line
   }, [])
 
   const [isLoading, setIsLoading] = useState(true);
@@ -55,10 +56,6 @@ export default function EmployeeCreate() {
   const gender = state.gender;
   const identity_card = state.identity_card;
 
-  const onChange = (file) => {
-    console.log('done', file);
-  };
-
   const fetchCreateFormData = async () => {
     setIsLoading(true);
     const requestOptions = {
@@ -67,12 +64,12 @@ export default function EmployeeCreate() {
         Accept: "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "GET",
     };
 
-    return await fetch(process.env.REACT_APP_API_URL+"/api/employee/create-form-data", requestOptions)
+    return await fetch("/api/employee/create-form-data", requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -130,13 +127,13 @@ export default function EmployeeCreate() {
         "X-CSRF-Token": cookies.csrf,
         Accept: "application/json",
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "POST",
       body: formData,
     };
 
-    return await fetch(process.env.REACT_APP_API_URL + "/api/employee/upload/image", requestOptions)
+    return await fetch("/api/employee/upload/image", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
           return Promise.reject('Bad request sent to server!');
@@ -164,13 +161,13 @@ export default function EmployeeCreate() {
             "Content-Type": "application/json",
             "X-CSRF-Token": cookies.csrf,
           },
-          mode: "cors",
+          
           credentials: "include",
           method: "POST",
           body: JSON.stringify(state),
         };
     
-        return fetch(process.env.REACT_APP_API_URL + "/api/employee/create", requestOptions);
+        return fetch("/api/employee/create", requestOptions);
       })
       .then((res) => {
         if (res.status !== 201) {
@@ -313,42 +310,40 @@ export default function EmployeeCreate() {
           </Col>
         </Form.Group>
 
-        <fieldset>
-          <Form.Group as={Row} controlId="formHorizontalGender">
-            <Form.Label as="book" column sm={2}>
-              Gender
-            </Form.Label>
-            <Col sm={10}>
-              <Form.Check
-                type="radio"
-                label="Male"
-                value="male"
-                name="gender"
-                id="genderRadios1"
-                onChange={handleChange}
-                checked={gender === "male"}
-              />
-              <Form.Check
-                type="radio"
-                label="Female"
-                value="female"
-                name="gender"
-                id="genderRadios2"
-                onChange={handleChange}
-                checked={gender === "female"}
-              />
-              <Form.Check
-                type="radio"
-                label="Others"
-                value="others"
-                name="gender"
-                id="genderRadios3"
-                onChange={handleChange}
-                checked={gender === "others"}
-              />
-            </Col>
-          </Form.Group>
-        </fieldset>
+        <Form.Group as={Row} controlId="formHorizontalGender">
+          <Form.Label as="book" column sm={2}>
+            Gender
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Check
+              type="radio"
+              label="Male"
+              value="male"
+              name="gender"
+              id="genderRadios1"
+              onChange={handleChange}
+              checked={gender === "male"}
+            />
+            <Form.Check
+              type="radio"
+              label="Female"
+              value="female"
+              name="gender"
+              id="genderRadios2"
+              onChange={handleChange}
+              checked={gender === "female"}
+            />
+            <Form.Check
+              type="radio"
+              label="Others"
+              value="others"
+              name="gender"
+              id="genderRadios3"
+              onChange={handleChange}
+              checked={gender === "others"}
+            />
+          </Col>
+        </Form.Group>
 
         <Form.Group as={Row} controlId="formHorizontalIdentityCard">
           <Form.Label column sm={2}>

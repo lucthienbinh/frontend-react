@@ -21,6 +21,7 @@ export default function LocationList() {
 
   useEffect(() => {
     fetchLocationList();
+    // eslint-disable-next-line
   }, []);
 
   const fetchLocationList = async () => {
@@ -31,14 +32,12 @@ export default function LocationList() {
         Accept: "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "GET",
     };
 
-    return await fetch(
-      process.env.REACT_APP_API_URL + "/api/delivery-location/list",
-      requestOptions
+    return await fetch( "/api/delivery-location/list", requestOptions
     )
       .then((res) => {
         if (res.status !== 200) {
@@ -88,13 +87,13 @@ export default function LocationList() {
       headers: {
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "DELETE",
     };
 
 
-    fetch(process.env.REACT_APP_API_URL + "/api/delivery-location/delete/" + id, requestOptions)
+    fetch("/api/delivery-location/delete/" + id, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -117,13 +116,13 @@ export default function LocationList() {
         "Content-Type": "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "POST",
       body: JSON.stringify(locationModal),
     };
 
-    fetch(process.env.REACT_APP_API_URL + "/api/delivery-location/create", requestOptions)
+    fetch("/api/delivery-location/create", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
           return Promise.reject("Bad request sent to server!");
@@ -146,13 +145,13 @@ export default function LocationList() {
         "Content-Type": "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      mode: "cors",
+      
       credentials: "include",
       method: "PUT",
       body: JSON.stringify(locationModal),
     };
 
-    fetch(process.env.REACT_APP_API_URL + "/api/delivery-location/update/" + locationModal.id, requestOptions)
+    fetch("/api/delivery-location/update/" + locationModal.id, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");

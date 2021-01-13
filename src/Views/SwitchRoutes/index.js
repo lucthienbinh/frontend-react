@@ -25,6 +25,7 @@ import EmployeeUpdate from '../Auth/Admin/Employee/Update';
 import TransportTypeList from '../Auth/Admin/TransportType/List';
 import TransportTypeDetail from '../Auth/Admin/TransportType/Detail';
 import TransportTypeCreate from '../Auth/Admin/TransportType/Create';
+import TransportTypeUpdate from '../Auth/Admin/TransportType/Update';
 
 export default function App() {
   const [cookies] = useCookies(['csrf']);
@@ -55,6 +56,7 @@ export default function App() {
           <Route exact path="/transport-type/list" component={TransportTypeList} />
           <Route exact path="/transport-type/detail/:id" component={TransportTypeDetail} />
           <Route exact path="/transport-type/create" component={TransportTypeCreate} />
+          <Route exact path="/transport-type/update/:id" component={TransportTypeUpdate} />
         </Switch>
       </Router>
     );

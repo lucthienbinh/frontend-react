@@ -105,7 +105,7 @@ export default function TransportTypeDetail() {
 
           <Form.Group as={Row} controlId="formHorizontalAddress">
             <Form.Label column sm={2}>
-              Bus station 1 (long)
+              Bus station from
             </Form.Label>
             <Col sm={10}>
               <Form.Control type="text" value={bus_station_from} disabled={true} />
@@ -114,7 +114,7 @@ export default function TransportTypeDetail() {
 
           <Form.Group as={Row} controlId="formHorizontalPoint">
             <Form.Label column sm={2}>
-              Bus station 2 (long)
+              Bus station to
             </Form.Label>
             <Col sm={10}>
               <Form.Control type="text" value={bus_station_to} disabled={true} />

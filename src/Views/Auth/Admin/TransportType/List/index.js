@@ -91,7 +91,7 @@ export default function TransportTypeList() {
     return (
       <AdminLayout>
         <div>
-          <p className="transport-type-list-header">Transport Type list</p>
+          <p className="transport-type-list-header">Transport type list</p>
           <Link to={'/transport-type/create'} className="btn transport-type-list-create-button">Create</Link>
         </div>
         <TableLink columns={COLUMNS} data={transportTypes} actionLink={actionLink} />

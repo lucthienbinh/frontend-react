@@ -33,10 +33,23 @@ export default function TransportTypeCreate() {
     console.log(event)
     const { name, value, valueAsNumber } = event.target;
     if (name === "same_city") {
-      const newValue = (value === "true") ? true : false;
-      setState((prevState) => {
-        return { ...prevState, [name]: newValue };
-      });
+      // Remove all long ship info when same_city change state (change from long ship to short ship)
+      if (value === "true") {
+        setState((prevState) => {
+          return { ...prevState, 
+            location_two: "", 
+            bus_station_from: "", 
+            bus_station_to: "", 
+            long_ship_duration: 0, 
+            long_ship_price: 0, 
+            [name]: true
+          };
+        });
+      } else {
+        setState((prevState) => {
+          return { ...prevState, [name]: false };
+        });
+      }
     } else {
       setState((prevState) => {
       return { ...prevState, [name]: valueAsNumber || value };
@@ -98,7 +111,7 @@ export default function TransportTypeCreate() {
             <Form.Control
               type="text"
               name="bus_station_from"
-              placeholder=" BusStation from"
+              placeholder="Bus station from"
               value={bus_station_from}
               onChange={handleChange}
               required
@@ -114,7 +127,7 @@ export default function TransportTypeCreate() {
             <Form.Control
               type="text"
               name="bus_station_to"
-              placeholder=" BusStation to"
+              placeholder="Bus station to"
               value={bus_station_to}
               onChange={handleChange}
               required
@@ -150,6 +163,7 @@ export default function TransportTypeCreate() {
               value={long_ship_price}
               onChange={handleChange}
               required
+              min="10000"
             />
           </Col>
         </Form.Group>
@@ -166,11 +180,10 @@ export default function TransportTypeCreate() {
             Same city
           </Form.Label>
           <Col sm={10}>
-          <p className="">Select Yes to create Short ship / Select No to create Long ship (Long ship will include short ship)</p>
           <Form.Check
               inline
               type="radio"
-              label="Yes"
+              label="Yes (Short Ship)"
               value="true"
               name="same_city"
               id="genderRadios1"
@@ -180,7 +193,7 @@ export default function TransportTypeCreate() {
             <Form.Check
               inline
               type="radio"
-              label="No"
+              label="No (Long Ship)"
               value="false"
               name="same_city"
               id="genderRadios2"
@@ -205,7 +218,7 @@ export default function TransportTypeCreate() {
             />
           </Col>
         </Form.Group>
-        {same_city ? (LongShipInput()) : (<></>)}
+        {same_city ? (<></>) : (LongShipInput())}
         <Form.Group as={Row} controlId="formHorizontalShortShipPricePerKm">
           <Form.Label column sm={2}>
             Short ship price per Km
@@ -218,6 +231,7 @@ export default function TransportTypeCreate() {
               value={short_ship_price_per_km}
               onChange={handleChange}
               required
+              min="10000"
             />
           </Col>
         </Form.Group>

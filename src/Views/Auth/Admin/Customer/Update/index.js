@@ -56,7 +56,7 @@ export default function CustomerUpdate() {
       })
       .then((json) => {
         console.log(json);
-        setState(() => { return { ...json.customer_info } })
+        setState(json.customer_info);
       })
       .catch((err) => {
         console.log(err);

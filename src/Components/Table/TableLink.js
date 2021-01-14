@@ -5,6 +5,7 @@ import { Button, ButtonGroup } from "react-bootstrap";
 import "./table.css";
 import { ColumnFilter } from "./ColumnFilter";
 
+// Source: https://github.com/gopinav/React-Table-Tutorials
 export const TableLink = (props) => {
   // eslint-disable-next-line
   const columns = useMemo(() => props.columns, []);
@@ -124,7 +125,7 @@ export const TableLink = (props) => {
           })}
         </tbody>
       </table>
-      <div>
+      <div className="table-pagination">
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {"<<"}
         </button>{" "}

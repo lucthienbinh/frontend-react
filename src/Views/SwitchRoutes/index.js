@@ -27,6 +27,12 @@ import TransportTypeDetail from '../Auth/Admin/TransportType/Detail';
 import TransportTypeCreate from '../Auth/Admin/TransportType/Create';
 import TransportTypeUpdate from '../Auth/Admin/TransportType/Update';
 
+import LongShipList from '../Auth/Admin/LongShip/List';
+// import LongShipDetail from '../Auth/Admin/LongShip/Detail';
+// import LongShipCreate from '../Auth/Admin/LongShip/Create';
+// import LongShipUpdate from '../Auth/Admin/LongShip/Update';
+
+
 export default function App() {
   const [cookies] = useCookies(['csrf']);
   if (typeof cookies.csrf === 'undefined') {
@@ -57,6 +63,7 @@ export default function App() {
           <Route exact path="/transport-type/detail/:id" component={TransportTypeDetail} />
           <Route exact path="/transport-type/create" component={TransportTypeCreate} />
           <Route exact path="/transport-type/update/:id" component={TransportTypeUpdate} />
+          <Route exact path="/long-ship/list" component={LongShipList} />
         </Switch>
       </Router>
     );

@@ -25,3 +25,9 @@ table th, tfoot td {
   background-color: #855a37;
   color: white;
 }
+
+.table-pagination {
+  box-sizing: border-box;
+  text-align: right;
+  padding: 1rem;
+}

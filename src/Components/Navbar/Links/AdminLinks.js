@@ -40,10 +40,14 @@ const AdminLinks = [
                 name: "Transport type list",
             },
             {
-                href: "/employee-type/list",
-                name: "Employee type list",
+                href: "/long-ship/list",
+                name: "Long ship list",
             },
         ]
+    },
+    {
+        href: "/long-ship/list",
+        name: "Long ship",
     },
 ];
 

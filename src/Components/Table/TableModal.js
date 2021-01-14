@@ -123,7 +123,7 @@ export const TableModal = (props) => {
           })}
         </tbody>
       </table>
-      <div>
+      <div className="table-pagination">
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {"<<"}
         </button>{" "}

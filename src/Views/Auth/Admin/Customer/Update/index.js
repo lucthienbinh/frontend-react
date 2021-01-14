@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
-import { Button, Form, Col, Row } from "react-bootstrap";
+import { Button, Form, Col, Row, Alert } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -13,6 +13,14 @@ export default function CustomerUpdate() {
   const [cookies] = useCookies(["csrf"]);
 
   const [isLoading, setIsLoading] = useState(true);
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const clearNotify = () => {
+    setSuccessMessage("");
+    setErrorMessage("")
+  }
+
   let { id } = useParams();
 
   const [state, setState] = useState({
@@ -41,7 +49,7 @@ export default function CustomerUpdate() {
         "X-CSRF-Token": cookies.csrf,
         Accept: "application/json",
       },
-      
+
       credentials: "include",
       method: "GET",
     };
@@ -61,10 +69,11 @@ export default function CustomerUpdate() {
       .catch((err) => {
         console.log(err);
       });
-      // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   const handleSubmit = (e) => {
+    clearNotify()
     e.preventDefault();
     console.log(state);
     const requestOptions = {
@@ -73,7 +82,7 @@ export default function CustomerUpdate() {
         "Content-Type": "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      
+
       credentials: "include",
       method: "PUT",
       body: JSON.stringify(state),
@@ -86,9 +95,9 @@ export default function CustomerUpdate() {
         }
         return res.json();
       })
-      .then((data) => console.log(data))
+      .then(data => setSuccessMessage(data.server_response))
       .catch((err) => {
-        console.log(err);
+        setErrorMessage(err);
       });
   };
 
@@ -97,7 +106,10 @@ export default function CustomerUpdate() {
   } else {
     return (
       <AdminLayout>
-        <p className="customer-create-header">Update Customer</p>
+        <p className="customer-create-header">Update customer</p>
+        {successMessage !== "" ? (<Alert key={3} variant="success">Server response: {successMessage}</Alert>) : (<></>)}
+        {errorMessage !== "" ? (<Alert key={3} variant="danger">Server response: {errorMessage}</Alert>) : (<></>)}
+
         <Form className="content" onSubmit={(e) => handleSubmit(e)}>
           <Form.Group as={Row} controlId="formHorizontalName">
             <Form.Label column sm={2}>

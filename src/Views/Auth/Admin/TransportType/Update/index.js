@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
-import { Button, Form, Col, Row } from "react-bootstrap";
+import { Button, Form, Col, Row, Alert } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 
 import AdminLayout from "../../../../Layouts/AdminLayout";
@@ -11,6 +11,14 @@ import Loading from "../../../../Loading";
 export default function TransportTypeUpdate() {
   const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
+
+  const [successMessage, setSuccessMessage] = useState("");
+const [errorMessage, setErrorMessage] = useState("");  
+const clearNotify = () => {
+  setSuccessMessage("");
+  setErrorMessage("")
+}
+
 
   const [isLoading, setIsLoading] = useState(true);
   let { id } = useParams();
@@ -81,6 +89,7 @@ export default function TransportTypeUpdate() {
   };
 
   const handleSubmit = (e) => {
+    clearNotify()
     e.preventDefault();
 
     const requestOptions = {
@@ -97,15 +106,15 @@ export default function TransportTypeUpdate() {
 
     console.log(state)
     return fetch("/api/transport-type/update/" + id, requestOptions)
-      .then((res) => {
-        if (res.status !== 200) {
-          return Promise.reject('Bad request sent to server!');
-        }
-        return res.json();
+    .then((res) => {
+      if (res.status !== 200) {
+          return Promise.reject("Bad request sent to server!");
+      }
+      return res.json();
       })
-      .then(data => console.log(data))
+      .then(data => setSuccessMessage(data.server_response))
       .catch((err) => {
-        console.log(err);
+      setErrorMessage(err);
       });
   };
 
@@ -201,6 +210,11 @@ export default function TransportTypeUpdate() {
     return (
       <AdminLayout>
         <p className="customer-create-header">Create Transport Type</p>
+
+{successMessage !== "" ? ( <Alert key={3} variant="success">Server response: {successMessage}</Alert>) : (<></>)}
+{errorMessage !== "" ? ( <Alert key={3} variant="danger">Server response: {errorMessage}</Alert>) : (<></>)}
+
+
         <Form className="content" onSubmit={(e) => handleSubmit(e)}>
           <Form.Group as={Row} controlId="formHorizontalSameCity">
             <Form.Label column sm={2}>

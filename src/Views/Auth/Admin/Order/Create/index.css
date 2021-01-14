@@ -1,4 +1,4 @@
-.customer-create-header {
+.order-create-header-1 {
     text-align: center;
     padding: 1rem;
     font-size: 3rem;
@@ -14,10 +14,25 @@
     line-height: 3rem !important;
 }
 
+.order-create-text-step-2 {
+    padding: 1rem;
+    font-size: 2.5rem;
+}
+
 .order-create-button-step-3 {
     width: 224px;
     height: 60px;
     background-color: lightcoral !important;
+    color: white !important;
+    font-size: 1.5rem !important;
+    outline: none;
+    line-height: 3rem !important;
+}
+
+.order-create-button-confirmed {
+    width: 224px;
+    height: 60px;
+    background-color: lightseagreen !important;
     color: white !important;
     font-size: 1.5rem !important;
     outline: none;

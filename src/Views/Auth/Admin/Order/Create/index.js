@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
-import { Button, Form, Col, Row } from "react-bootstrap";
+import { Button, Form, Col, Row, Alert } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
@@ -18,12 +18,20 @@ export default function OrderCreate() {
   const [transportTypes, setTransportTypes] = useState([]);
   const [longShips, setLongShips] = useState([]);
 
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");  
+  const clearNotify = () => {
+    setSuccessMessage("");
+    setErrorMessage("")
+  }
+
   // Order payment
   const [orderCreatedID, setOrderCreatedID] = useState(0);
   const [orderTotalPrice, setOrderTotalPrice] = useState(0)
   const [finishedStepOne, setFinishedStepOne] = useState(false);
   const [hideCreditButton, setHideCreditButton] = useState(false);
   const [finishedStepTwo, setFinishedStepTwo] = useState(false);
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
 
   useEffect(() => {
     fetchCreateFormData();
@@ -96,6 +104,7 @@ export default function OrderCreate() {
   };
 
   const handleSubmit = (e) => {
+    clearNotify()
     e.preventDefault();
 
     const requestOptions = {
@@ -120,9 +129,10 @@ export default function OrderCreate() {
       .then(data => {
         setOrderCreatedID(data.order_id);
         setOrderTotalPrice(data.total_price)
+        setSuccessMessage(data.server_response)
       })
       .catch((err) => {
-        console.log(err);
+        setErrorMessage(err);
       });
   };
 
@@ -221,8 +231,8 @@ export default function OrderCreate() {
         }
         return res.json();
       })
-      .then((data) => {
-        console.log(data);
+      .then(() => {
+        setPaymentConfirmed(true)
       })
       .catch((err) => {
         console.log(err);
@@ -234,7 +244,7 @@ export default function OrderCreate() {
   } else if (finishedStepOne === false) {
     return (
       <AdminLayout>
-        <p className="customer-create-header">Create Order </p>
+        <p className="order-create-header-1">Create order</p>
         <Form className="content" onSubmit={(e) => handleSubmit(e)}>
 
           <Form.Group as={Row} controlId="formHorizontalsAddress">
@@ -416,6 +426,9 @@ export default function OrderCreate() {
 
           <hr />
 
+          {successMessage !== "" ? ( <Alert key={3} variant="success">Server response: {successMessage}</Alert>) : (<></>)}
+          {errorMessage !== "" ? ( <Alert key={3} variant="danger">Server response: {errorMessage}</Alert>) : (<></>)}
+
           <Form.Group as={Row} controlId="formHorizoantgswf2al4aeq">
             <Form.Label column sm={2}>Total price</Form.Label>
             <Col sm={10}>
@@ -464,35 +477,35 @@ export default function OrderCreate() {
   } else if (finishedStepTwo === false) {
     return (
       <AdminLayout>
-        <p className="customer-create-header">Select payment method</p>
+        <p className="order-create-header-1">Select method - Total price: {orderTotalPrice} VND</p>
         <Form.Group as={Row}>
-          <Form.Label column md={4}>
-            <p className="customer-create-header">Use cash</p>
+          <Form.Label column md={6}>
+            <p className="order-create-text-step-2">Employee receive money:</p>
           </Form.Label>
-          <Col md={8}>
+          <Col md={6}>
             <Button className="order-create-button" onClick={() => handlePaymentStep2("cash")}>
-              Cash
+              Use Cash
           </Button>
           </Col>
         </Form.Group>
         {hideCreditButton ? (<></>) : (
           <Form.Group as={Row}>
-            <Form.Label column md={4}>
-              <p className="customer-create-header">Use credit</p>
+            <Form.Label column md={6}>
+              <p className="order-create-text-step-2">Customer credit:</p>
             </Form.Label>
-            <Col md={8}>
+            <Col md={6}>
               <Button className="order-create-button" onClick={() => handlePaymentStep2("credit")}>
-                Credit
+                Use Credit
               </Button>
             </Col>
           </Form.Group>
         )}
       </AdminLayout>
     )
-  } else {
+  } else if (paymentConfirmed === false){
     return (
       <AdminLayout>
-        <p className="customer-create-header">Please click this button with careful!</p>
+        <p className="order-create-header-1">Please click this button with your carefulness!</p>
         <div className="order-create-align-center">
           <Button className="order-create-button-step-3" onClick={() => handlePaymentStep3()}>
             Payment confirm
@@ -500,5 +513,17 @@ export default function OrderCreate() {
         </div>
       </AdminLayout>
     )
+  } else {
+    return (
+      <AdminLayout>
+      <p className="order-create-header-1">New order has been created and its payment has been processed!</p>
+      <div className="order-create-align-center">
+        <Button className="order-create-button-confirmed" onClick={() => history.push("/order/list")}>
+          Order list
+        </Button>
+      </div>
+    </AdminLayout>
+    )
+   
   }
 }

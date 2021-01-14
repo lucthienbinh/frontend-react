@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./index.css";
-import { Button, Form, Col, Row } from "react-bootstrap";
+import { Button, Form, Col, Row, Alert } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
@@ -9,6 +9,14 @@ import AdminLayout from "../../../../Layouts/AdminLayout";
 export default function TransportTypeCreate() {
   const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const clearNotify = () => {
+    setSuccessMessage("");
+    setErrorMessage("")
+  }
+
 
   const [state, setState] = useState({
     same_city: true,
@@ -36,12 +44,13 @@ export default function TransportTypeCreate() {
       // Remove all long ship info when same_city change state (change from long ship to short ship)
       if (value === "true") {
         setState((prevState) => {
-          return { ...prevState, 
-            location_two: "", 
-            bus_station_from: "", 
-            bus_station_to: "", 
-            long_ship_duration: 0, 
-            long_ship_price: 0, 
+          return {
+            ...prevState,
+            location_two: "",
+            bus_station_from: "",
+            bus_station_to: "",
+            long_ship_duration: 0,
+            long_ship_price: 0,
             [name]: true
           };
         });
@@ -52,12 +61,13 @@ export default function TransportTypeCreate() {
       }
     } else {
       setState((prevState) => {
-      return { ...prevState, [name]: valueAsNumber || value };
+        return { ...prevState, [name]: valueAsNumber || value };
       });
     }
   };
 
   const handleSubmit = (e) => {
+    clearNotify()
     e.preventDefault();
 
     const requestOptions = {
@@ -66,7 +76,7 @@ export default function TransportTypeCreate() {
         "Content-Type": "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      
+
       credentials: "include",
       method: "POST",
       body: JSON.stringify(state),
@@ -75,14 +85,15 @@ export default function TransportTypeCreate() {
     return fetch("/api/transport-type/create", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
-          return Promise.reject('Bad request sent to server!');
+          return Promise.reject("Bad request sent to server!");
         }
         return res.json();
       })
-      .then(data => console.log(data))
+      .then(data => setSuccessMessage(data.server_response))
       .catch((err) => {
-        console.log(err);
+        setErrorMessage(err);
       });
+
   };
 
   const LongShipInput = () => {
@@ -134,7 +145,7 @@ export default function TransportTypeCreate() {
             />
           </Col>
         </Form.Group>
-       
+
         <Form.Group as={Row} controlId="formHorizontalLongShipDuration">
           <Form.Label column sm={2}>
             Long ship duration
@@ -147,6 +158,7 @@ export default function TransportTypeCreate() {
               value={long_ship_duration}
               onChange={handleChange}
               required
+              min="86400"
             />
           </Col>
         </Form.Group>
@@ -163,24 +175,28 @@ export default function TransportTypeCreate() {
               value={long_ship_price}
               onChange={handleChange}
               required
-              min="10000"
+              min="100000"
             />
           </Col>
         </Form.Group>
       </fieldset>
-  );
+    );
   }
 
   return (
     <AdminLayout>
-      <p className="customer-create-header">Create Transport Type</p>
+      <p className="customer-create-header">Create transport type</p>
+
+      {successMessage !== "" ? (<Alert key={3} variant="success">Server response: {successMessage}</Alert>) : (<></>)}
+      {errorMessage !== "" ? (<Alert key={3} variant="danger">Server response: {errorMessage}</Alert>) : (<></>)}
+
       <Form className="content" onSubmit={(e) => handleSubmit(e)}>
         <Form.Group as={Row} controlId="formHorizontalSameCity">
           <Form.Label column sm={2}>
             Same city
           </Form.Label>
           <Col sm={10}>
-          <Form.Check
+            <Form.Check
               inline
               type="radio"
               label="Yes (Short Ship)"
@@ -202,7 +218,7 @@ export default function TransportTypeCreate() {
             />
           </Col>
         </Form.Group>
-        <hr/> 
+        <hr />
         <Form.Group as={Row} controlId="formHorizontalLocationOne">
           <Form.Label column sm={2}>
             Location one

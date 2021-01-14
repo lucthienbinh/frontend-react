@@ -13,6 +13,7 @@ export const LONGSHIPCOLUMNS = [
   {
     Header: "License plate",
     accessor: "license_plate",
+    disableFilters: true,
   },
 
   {
@@ -68,19 +69,17 @@ export const TRANSPORTTYPECOLUMNS = [
       {
         Header: "From",
         accessor: "location_one",
-        disableFilters: true,
       },
       {
         Header: "To",
         accessor: "location_two",
-        disableFilters: true,
       },
       {
         Header: "Duration",
         accessor: "long_ship_duration",
         disableFilters: true,
         Cell: ({ value }) => {
-          let date = value / 86400
+          let date = Math.floor(value / 86400)
           return date + " day(s)";
         }
       },

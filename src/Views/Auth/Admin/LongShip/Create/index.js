@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
-import { Button, Form, Col, Row } from "react-bootstrap";
+import { Button, Form, Col, Row, Alert } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { format } from 'date-fns'
@@ -18,12 +18,19 @@ export default function LongShipCreate() {
   const [isLoading, setIsLoading] = useState(true);
   const [transportTypes, setTransportTypes] = useState([]);
 
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");  
+  const clearNotify = () => {
+    setSuccessMessage("");
+    setErrorMessage("")
+  }
+
   const [state, setState] = useState({
     transport_type_id: 0,
     transport_type_duration: 0,
     license_plate: "",
-    estimated_time_of_departure: new Date().getTime()/1000,
-    estimated_time_of_arrival:  new Date().getTime()/1000,
+    estimated_time_of_departure: Math.floor(new Date().getTime()/1000),
+    estimated_time_of_arrival:  Math.floor(new Date().getTime()/1000),
   });
 
   useEffect(() => {
@@ -69,13 +76,14 @@ export default function LongShipCreate() {
 
   const handleChange = (event) => {
     console.log(event)
+    console.log(state)
     const { name, value, valueAsNumber, valueAsDate } = event.target;
     if ( name === "estimated_time_of_departure" ) {
       console.log(valueAsDate.getTime() / 1000)
       setState((prevState) => {
         return { ...prevState, 
-          [name]: valueAsDate.getTime() / 1000,
-          estimated_time_of_arrival: (valueAsDate.getTime() / 1000) + prevState.transport_type_duration,
+          [name]: Math.floor(valueAsDate.getTime() / 1000),
+          estimated_time_of_arrival: Math.floor(valueAsDate.getTime() / 1000) + prevState.transport_type_duration,
         }
         ;
       });
@@ -88,7 +96,12 @@ export default function LongShipCreate() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    if (state.transport_type_id === 0) {
+      setErrorMessage("Please select the transport info in the below table")
+      return
+    }
+    clearNotify()
+    
     const requestOptions = {
       headers: {
         Accept: "application/json",
@@ -104,17 +117,18 @@ export default function LongShipCreate() {
     return fetch("/api/long-ship/create", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
-          return Promise.reject('Bad request sent to server!');
+          return Promise.reject("Bad request sent to server!");
         }
         return res.json();
       })
-      .then(data => console.log(data))
+      .then(data => setSuccessMessage(data.server_response))
       .catch((err) => {
-        console.log(err);
+        setErrorMessage(err);
       });
   };
 
   const handleSelectItem = (e) => {
+    clearNotify()
     console.log(e)
     setState((prevState) => {
       return { ...prevState, 
@@ -136,7 +150,8 @@ export default function LongShipCreate() {
     <AdminLayout>
       <p className="employee-create-header">Create long ship</p>
       <Form className="content" onSubmit={(e) => handleSubmit(e)}>
-
+      {successMessage !== "" ? ( <Alert key={3} variant="success">Server response: {successMessage}</Alert>) : (<></>)}
+      {errorMessage !== "" ? ( <Alert key={3} variant="danger">Server response: {errorMessage}</Alert>) : (<></>)}
       <Form.Group as={Row} controlId="formHorizontal1">
           <Form.Label column sm={2}>
             License Plate

@@ -7,12 +7,13 @@ import Loading from "../../../../Loading";
 import AdminLayout from "../../../../Layouts/AdminLayout";
 
 import { TableLink } from "../../../../../Components/Table/TableLink";
-import { COLUMNS } from "./columns";
+import { ORDER_PAY_COLUMNS, COLUMNS } from "./columns";
 
 export default function OrderList() {
   const [cookies] = useCookies(["csrf"]);
 
   const [orders, setOrders] = useState([]);
+  const [orderPays, setOrderPays] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function OrderList() {
       .then((json) => {
         console.log(json)
         setOrders(json.order_info_list);
+        setOrderPays(json.order_pay_list)
         setIsLoading(false);
       })
       .catch((err) => {
@@ -95,6 +97,11 @@ export default function OrderList() {
           <Link to={'/order/create'} className="btn transport-type-list-create-button">Create</Link>
         </div>
         <TableLink columns={COLUMNS} data={orders} actionLink={actionLink} />
+        <hr/>
+        <div>
+          <p className="order-list-header">Order payment list</p>
+        </div>
+        <TableLink columns={ORDER_PAY_COLUMNS} data={orderPays} actionLink={actionLink} />
       </AdminLayout>
     );
   }

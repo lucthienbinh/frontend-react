@@ -24,7 +24,7 @@ export const TRANSPORTTYPECOLUMNS = [
         accessor: "long_ship_duration",
         disableFilters: true,
         Cell: ({ value }) => {
-          let date = value / 86400
+          let date = Math.floor(value / 86400)
           return date + " day(s)";
         }
       },

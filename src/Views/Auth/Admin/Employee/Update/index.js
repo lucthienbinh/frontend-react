@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./index.css";
-import { Button, Form, Col, Row, InputGroup } from "react-bootstrap";
+import { Button, Form, Col, Row, InputGroup, Alert } from "react-bootstrap";
 import { useHistory, useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
@@ -26,6 +26,12 @@ export default function EmployeeUpdate() {
     }
     // eslint-disable-next-line
   }, [])
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const clearNotify = () => {
+    setSuccessMessage("");
+    setErrorMessage("")
+  }
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -63,7 +69,7 @@ export default function EmployeeUpdate() {
         Accept: "application/json",
         "X-CSRF-Token": cookies.csrf,
       },
-      
+
       credentials: "include",
       method: "GET",
     };
@@ -132,21 +138,21 @@ export default function EmployeeUpdate() {
         maxSize: 300
       };
       const resizedImage = await ResizeImage(config)
-  
+
       let formData = new FormData();
       formData.append("file", resizedImage, picture[0].name);
-      
+
       const requestOptions = {
         headers: {
           "X-CSRF-Token": cookies.csrf,
           Accept: "application/json",
         },
-        
+
         credentials: "include",
         method: "POST",
         body: formData,
       };
-  
+
       return await fetch("/api/employee/upload/image", requestOptions)
         .then((res) => {
           if (res.status !== 201) {
@@ -154,7 +160,7 @@ export default function EmployeeUpdate() {
           }
           return res.json();
         })
-        .then(async (data) => { 
+        .then(async (data) => {
           console.log(data.filename)
           // Keep in mind this a very dangerous way to change state of component!!!!!
           state.avatar = data.filename;
@@ -165,10 +171,11 @@ export default function EmployeeUpdate() {
     } else {
       return await console.log();
     }
-    
+
   };
 
   const handleSubmit = (e) => {
+    clearNotify()
     e.preventDefault();
 
     return submitImage()
@@ -179,205 +186,210 @@ export default function EmployeeUpdate() {
             "Content-Type": "application/json",
             "X-CSRF-Token": cookies.csrf,
           },
-          
+
           credentials: "include",
           method: "PUT",
           body: JSON.stringify(state),
         };
-    
+
         return fetch(`/api/employee/update/${id}`, requestOptions);
       })
       .then((res) => {
         if (res.status !== 200) {
-          return Promise.reject('Bad request sent to server!');
+          return Promise.reject("Bad request sent to server!");
         }
         return res.json();
       })
-      .then(data => console.log(data))
+      .then(data => setSuccessMessage(data.server_response))
       .catch((err) => {
-        console.log(err);
+        setErrorMessage(err);
       });
   };
 
   if (isLoading) {
     return <Loading />;
   } else {
-  return (
-    <AdminLayout>
-      <p className="employee-create-header">Update employee</p>
-      <Form ref={formRef} className="content" onSubmit={(e) => handleSubmit(e)}>
-        <Form.Group as={Row} controlId="formHorizontalAvatar">
-          <Form.Label column sm={2}>
-            Avatar
-          </Form.Label>
-          <Col sm={10}>
-            <InputGroup>
-              <Form.File
-                name="file"
-                id="custom-file"
-                label="Select file"
-                onChange={onChangePicture}
-                accept="image/*"
-                custom
-              />
-              <InputGroup.Append>
-                <Button className="btn btn-10" onClick={resetForm}>Remove</Button>
-              </InputGroup.Append>
-            </InputGroup>
-          </Col>
-        </Form.Group>
+    return (
+      <AdminLayout>
+        <p className="employee-create-header">Update employee</p>
 
-        <Form.Group as={Row} controlId="formHorizontalName">
-          <Form.Label column sm={2}>
-            Name
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={name}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
+        {successMessage !== "" ? (<Alert key={3} variant="success">Server response: {successMessage}</Alert>) : (<></>)}
+        {errorMessage !== "" ? (<Alert key={3} variant="danger">Server response: {errorMessage}</Alert>) : (<></>)}
 
-        <Form.Group as={Row} controlId="formHorizontalAddress">
-          <Form.Label column sm={2}>
-            Address
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              name="address"
-              placeholder="Address"
-              value={address}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalPhone">
-          <Form.Label column sm={2}>
-            Phone
+        <Form ref={formRef} className="content" onSubmit={(e) => handleSubmit(e)}>
+          <Form.Group as={Row} controlId="formHorizontalAvatar">
+            <Form.Label column sm={2}>
+              Avatar
           </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="number"
-              name="phone"
-              placeholder="Phone"
-              value={phone}
-              onChange={handleChange}
-              required
-              min="100000000"
-              max="9999999999"
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalAge">
-          <Form.Label column sm={2}>
-            Age
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="number"
-              name="age"
-              value={age}
-              onChange={handleChange}
-              min="1"
-              max="99"
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        <fieldset>
-          <Form.Group as={Row} controlId="formHorizontalGender">
-            <Form.Label as="book" column sm={2}>
-              Gender
-            </Form.Label>
             <Col sm={10}>
-              <Form.Check
-                type="radio"
-                label="Male"
-                value="male"
-                name="gender"
-                id="genderRadios1"
+              <InputGroup>
+                <Form.File
+                  name="file"
+                  id="custom-file"
+                  label="Select file"
+                  onChange={onChangePicture}
+                  accept="image/*"
+                  custom
+                />
+                <InputGroup.Append>
+                  <Button className="btn btn-10" onClick={resetForm}>Remove</Button>
+                </InputGroup.Append>
+              </InputGroup>
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontalName">
+            <Form.Label column sm={2}>
+              Name
+          </Form.Label>
+            <Col sm={10}>
+              <Form.Control
+                type="text"
+                name="name"
+                placeholder="Name"
+                value={name}
                 onChange={handleChange}
-                checked={gender === "male"}
-              />
-              <Form.Check
-                type="radio"
-                label="Female"
-                value="female"
-                name="gender"
-                id="genderRadios2"
-                onChange={handleChange}
-                checked={gender === "female"}
-              />
-              <Form.Check
-                type="radio"
-                label="Others"
-                value="others"
-                name="gender"
-                id="genderRadios3"
-                onChange={handleChange}
-                checked={gender === "others"}
+                required
               />
             </Col>
           </Form.Group>
-        </fieldset>
 
-        <Form.Group as={Row} controlId="formHorizontalIdentityCard">
-          <Form.Label column sm={2}>
-            Identity card
+          <Form.Group as={Row} controlId="formHorizontalAddress">
+            <Form.Label column sm={2}>
+              Address
           </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              name="identity_card"
-              placeholder="Identity Card"
-              value={identity_card}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
+            <Col sm={10}>
+              <Form.Control
+                type="text"
+                name="address"
+                placeholder="Address"
+                value={address}
+                onChange={handleChange}
+                required
+              />
+            </Col>
+          </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalSelectEmployeeType">
-          <Form.Label column sm={2}>Employee type</Form.Label>
-          <Col sm={10}>
-            <Select options={etOptions} onChange={handleChange} defaultValue={etSelected}/>
-          </Col>
+          <Form.Group as={Row} controlId="formHorizontalPhone">
+            <Form.Label column sm={2}>
+              Phone
+          </Form.Label>
+            <Col sm={10}>
+              <Form.Control
+                type="number"
+                name="phone"
+                placeholder="Phone"
+                value={phone}
+                onChange={handleChange}
+                required
+                min="100000000"
+                max="9999999999"
+              />
+            </Col>
+          </Form.Group>
 
-        </Form.Group>
+          <Form.Group as={Row} controlId="formHorizontalAge">
+            <Form.Label column sm={2}>
+              Age
+          </Form.Label>
+            <Col sm={10}>
+              <Form.Control
+                type="number"
+                name="age"
+                value={age}
+                onChange={handleChange}
+                min="1"
+                max="99"
+                required
+              />
+            </Col>
+          </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalSelectDeliveryLocation">
-          <Form.Label column sm={2}>Delivery location</Form.Label>
-          <Col sm={10}>
-          <Select options={dlOptions} onChange={handleChange} defaultValue={dlSelected}/>
-          </Col>
-        </Form.Group>
+          <fieldset>
+            <Form.Group as={Row} controlId="formHorizontalGender">
+              <Form.Label as="book" column sm={2}>
+                Gender
+            </Form.Label>
+              <Col sm={10}>
+                <Form.Check
+                  type="radio"
+                  label="Male"
+                  value="male"
+                  name="gender"
+                  id="genderRadios1"
+                  onChange={handleChange}
+                  checked={gender === "male"}
+                />
+                <Form.Check
+                  type="radio"
+                  label="Female"
+                  value="female"
+                  name="gender"
+                  id="genderRadios2"
+                  onChange={handleChange}
+                  checked={gender === "female"}
+                />
+                <Form.Check
+                  type="radio"
+                  label="Others"
+                  value="others"
+                  name="gender"
+                  id="genderRadios3"
+                  onChange={handleChange}
+                  checked={gender === "others"}
+                />
+              </Col>
+            </Form.Group>
+          </fieldset>
 
-        <Form.Group as={Row}>
-          <Col sm={{ span: 1, offset: 2 }}>
-            <Button className="btn-6" type="submit">
-              Update
+          <Form.Group as={Row} controlId="formHorizontalIdentityCard">
+            <Form.Label column sm={2}>
+              Identity card
+          </Form.Label>
+            <Col sm={10}>
+              <Form.Control
+                type="text"
+                name="identity_card"
+                placeholder="Identity Card"
+                value={identity_card}
+                onChange={handleChange}
+                required
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontalSelectEmployeeType">
+            <Form.Label column sm={2}>Employee type</Form.Label>
+            <Col sm={10}>
+              <Select options={etOptions} onChange={handleChange} defaultValue={etSelected} />
+            </Col>
+
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontalSelectDeliveryLocation">
+            <Form.Label column sm={2}>Delivery location</Form.Label>
+            <Col sm={10}>
+              <Select options={dlOptions} onChange={handleChange} defaultValue={dlSelected} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row}>
+            <Col sm={{ span: 1, offset: 2 }}>
+              <Button className="btn-6" type="submit">
+                Update
             </Button>
-          </Col>
+            </Col>
 
-          <Col sm={{ span: 1 }}>
-            <Button className="btn-7" onClick={() => history.push("/employee/list")}>
-              Cancel
+            <Col sm={{ span: 1 }}>
+              <Button className="btn-7" onClick={() => history.push("/employee/list")}>
+                Cancel
             </Button>
-          </Col>
+            </Col>
 
-        </Form.Group>
-      </Form>
-    </AdminLayout>
-  );
+          </Form.Group>
+        </Form>
+      </AdminLayout>
+    );
   }
 }

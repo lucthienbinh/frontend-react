@@ -32,18 +32,8 @@ const AdminLinks = [
         ]
     },
     {
-        name: "Transport",
-        dropDown: true,
-        childrens: [
-            {
-                href: "/transport-type/list",
-                name: "Transport type list",
-            },
-            {
-                href: "/long-ship/list",
-                name: "Long ship list",
-            },
-        ]
+        href: "/transport-type/list",
+        name: "Transport type list",
     },
     {
         href: "/long-ship/list",

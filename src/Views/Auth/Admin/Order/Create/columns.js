@@ -50,9 +50,6 @@ export const LONGSHIPCOLUMNS = [
       )
     },
   },
-  {
-    Header: "Action",
-  },
 ];
 
 export const TRANSPORTTYPECOLUMNS = [
@@ -86,6 +83,16 @@ export const TRANSPORTTYPECOLUMNS = [
       {
         Header: "Price",
         accessor: "long_ship_price",
+        disableFilters: true,
+      },
+    ]
+  },
+  {
+    Header: 'Short ship',
+    columns: [
+      {
+        Header: "Price / KM",
+        accessor: "short_ship_price_per_km",
         disableFilters: true,
       },
     ]

@@ -4,6 +4,32 @@
     font-size: 3rem;
 }
 
+.order-create-button {
+    width: 150px;
+    height: 60px;
+    margin-top: 2rem;
+    background-color: #c4ac84 !important;
+    font-size: 1.5rem !important;
+    outline: none;
+    line-height: 3rem !important;
+}
+
+.order-create-button-step-3 {
+    width: 224px;
+    height: 60px;
+    background-color: lightcoral !important;
+    color: white !important;
+    font-size: 1.5rem !important;
+    outline: none;
+    line-height: 3rem !important;
+}
+
+.order-create-align-center{
+    text-align: center;
+    padding: 2rem;
+    background-color: aquamarine;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */

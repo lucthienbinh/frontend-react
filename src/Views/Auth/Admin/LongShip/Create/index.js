@@ -23,7 +23,7 @@ export default function LongShipCreate() {
     transport_type_duration: 0,
     license_plate: "",
     estimated_time_of_departure: new Date().getTime()/1000,
-    estimated_time_of_arrival: 10,
+    estimated_time_of_arrival:  new Date().getTime()/1000,
   });
 
   useEffect(() => {

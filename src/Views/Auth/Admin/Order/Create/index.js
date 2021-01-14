@@ -9,7 +9,6 @@ import Loading from "../../../../Loading";
 
 import { LONGSHIPCOLUMNS, TRANSPORTTYPECOLUMNS } from "./columns";
 import { TableSelect } from "../../../../../Components/Table/TableSelect";
-import { faTruckMonster } from "@fortawesome/free-solid-svg-icons";
 
 export default function OrderCreate() {
   const history = useHistory();
@@ -18,6 +17,13 @@ export default function OrderCreate() {
   const [isLoading, setIsLoading] = useState(true);
   const [transportTypes, setTransportTypes] = useState([]);
   const [longShips, setLongShips] = useState([]);
+
+  // Order payment
+  const [orderCreatedID, setOrderCreatedID] = useState(0);
+  const [orderTotalPrice, setOrderTotalPrice] = useState(0)
+  const [finishedStepOne, setFinishedStepOne] = useState(false);
+  const [hideCreditButton, setHideCreditButton] = useState(false);
+  const [finishedStepTwo, setFinishedStepTwo] = useState(false);
 
   useEffect(() => {
     fetchCreateFormData();
@@ -55,19 +61,19 @@ export default function OrderCreate() {
   };
 
   const [state, setState] = useState({
-    weight: 0,
-    volume: 0,
-    type: "",
-    customer_send_id: 0,
+    weight: 1,
+    volume: 1,
+    type: "123",
+    customer_send_id: 1,
     customer_receive_id: 0,
-    sender: "",
-    receiver: "",
-    transport_type_id: 0,
-    detail: "",
-    note: "",
+    sender: "123 Vie ",
+    receiver: "123 Vie ",
+    transport_type_id: 3,
+    detail: "123 Vie ",
+    note: "123 Vie ",
     use_long_ship: true,
-    long_ship_id: 0,
-    short_ship_distance: 0,
+    long_ship_id: 1,
+    short_ship_distance: 20,
   });
   const weight = state.weight;
   const volume = state.volume;
@@ -83,7 +89,6 @@ export default function OrderCreate() {
   const short_ship_distance = state.short_ship_distance;
 
   const handleChange = (event) => {
-    console.log(event)
     const { name, value, valueAsNumber } = event.target;
     setState((prevState) => {
       return { ...prevState, [name]: valueAsNumber || value };
@@ -108,11 +113,14 @@ export default function OrderCreate() {
     return fetch("/api/order/create", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
-          return Promise.reject(res.json());
+          return Promise.reject('Bad request sent to server!');
         }
         return res.json();
       })
-      .then(data => console.log(data))
+      .then(data => {
+        setOrderCreatedID(data.order_id);
+        setOrderTotalPrice(data.total_price)
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -134,9 +142,96 @@ export default function OrderCreate() {
     handleSelectItem: (e) => { console.log(e) },
   };
 
+  const handlePaymentStep1 = async () => {
+    const requestOptions = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-Token": cookies.csrf,
+      },
+
+      credentials: "include",
+      method: "POST",
+      body: JSON.stringify({ order_id: orderCreatedID }),
+    };
+
+
+    return await fetch("/api/order-pay/create-step-one", requestOptions)
+      .then((res) => {
+        if (res.status !== 201) {
+          return Promise.reject("Bad request sent to server!");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setFinishedStepOne(true)
+        setHideCreditButton(data.hideCreditButton)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handlePaymentStep2 = async (method) => {
+    const requestOptions = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-Token": cookies.csrf,
+      },
+
+      credentials: "include",
+      method: "POST",
+      body: JSON.stringify({ order_id: orderCreatedID, pay_method: method }),
+    };
+
+
+    return await fetch("/api/order-pay/create-step-two", requestOptions)
+      .then((res) => {
+        if (res.status !== 201) {
+          return Promise.reject("Bad request sent to server!");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setFinishedStepTwo(true)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handlePaymentStep3 = async () => {
+    const requestOptions = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-Token": cookies.csrf,
+      },
+
+      credentials: "include",
+      method: "PUT",
+      body: JSON.stringify({ order_id: orderCreatedID }),
+    };
+
+    return await fetch("/api/order-pay/update-payment-confirm/orderid/" + orderCreatedID, requestOptions)
+      .then((res) => {
+        if (res.status !== 200) {
+          return Promise.reject("Bad request sent to server!");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   if (isLoading) {
     return <Loading />;
-  } else {
+  } else if (finishedStepOne === false) {
     return (
       <AdminLayout>
         <p className="customer-create-header">Create Order </p>
@@ -145,7 +240,7 @@ export default function OrderCreate() {
           <Form.Group as={Row} controlId="formHorizontalsAddress">
             <Form.Label column sm={2}>
               Weight
-          </Form.Label>
+            </Form.Label>
             <Col sm={10}>
               <Form.Control
                 type="number"
@@ -264,7 +359,7 @@ export default function OrderCreate() {
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizoantwf2al4aeq">
+          <Form.Group as={Row} controlId="formHorizoantwf2arl4aeq">
             <Form.Label column sm={2}>Transport type ID</Form.Label>
             <Col sm={10}>
               <Form.Control type="text" value={transport_type_id} disabled={true} />
@@ -306,7 +401,7 @@ export default function OrderCreate() {
           <Form.Group as={Row} controlId="formHoriddzontalsAddress">
             <Form.Label column sm={2}>
               Short ship distance
-          </Form.Label>
+            </Form.Label>
             <Col sm={10}>
               <Form.Control
                 type="number"
@@ -321,23 +416,40 @@ export default function OrderCreate() {
 
           <hr />
 
-          <Form.Group as={Row}>
-            <Col sm={{ span: 1, offset: 2 }}>
-              <Button className="btn-6" type="submit">
-                Create
-            </Button>
-            </Col>
-
-            <Col sm={{ span: 1 }}>
-              <Button className="btn-7" onClick={() => history.push("/order/list")}>
-                Cancel
-            </Button>
+          <Form.Group as={Row} controlId="formHorizoantgswf2al4aeq">
+            <Form.Label column sm={2}>Total price</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={orderTotalPrice} disabled={true} />
             </Col>
           </Form.Group>
 
+          <Form.Group as={Row} controlId="formHorizoantwf2al4aeq">
+            <Form.Label column sm={2}>Order created ID</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={orderCreatedID} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row}>
+            <Form.Label column sm={2}>
+              Create order
+            </Form.Label>
+            <Col sm={10}>
+              {orderCreatedID !== 0 ? (
+                <Button className="btn-10 mr-4" onClick={handlePaymentStep1}>
+                  Pay
+                </Button>
+              ) : (<></>)}
+              <Button className="btn-6 mr-4" type="submit">
+                Create
+              </Button>
+              <Button className="btn-7" onClick={() => history.push("/order/list")}>
+                Cancel
+              </Button>
+            </Col>
+          </Form.Group>
         </Form>
         <hr />
-
         <div>
           <p className="long-ship-list-header">Long ship list</p>
         </div>
@@ -349,5 +461,44 @@ export default function OrderCreate() {
         <TableSelect columns={TRANSPORTTYPECOLUMNS} data={transportTypes} actionLink={actionLink2} />
       </AdminLayout>
     );
+  } else if (finishedStepTwo === false) {
+    return (
+      <AdminLayout>
+        <p className="customer-create-header">Select payment method</p>
+        <Form.Group as={Row}>
+          <Form.Label column md={4}>
+            <p className="customer-create-header">Use cash</p>
+          </Form.Label>
+          <Col md={8}>
+            <Button className="order-create-button" onClick={() => handlePaymentStep2("cash")}>
+              Cash
+          </Button>
+          </Col>
+        </Form.Group>
+        {hideCreditButton ? (<></>) : (
+          <Form.Group as={Row}>
+            <Form.Label column md={4}>
+              <p className="customer-create-header">Use credit</p>
+            </Form.Label>
+            <Col md={8}>
+              <Button className="order-create-button" onClick={() => handlePaymentStep2("credit")}>
+                Credit
+              </Button>
+            </Col>
+          </Form.Group>
+        )}
+      </AdminLayout>
+    )
+  } else {
+    return (
+      <AdminLayout>
+        <p className="customer-create-header">Please click this button with careful!</p>
+        <div className="order-create-align-center">
+          <Button className="order-create-button-step-3" onClick={() => handlePaymentStep3()}>
+            Payment confirm
+          </Button>
+        </div>
+      </AdminLayout>
+    )
   }
 }

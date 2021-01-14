@@ -1,59 +1,41 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
-import { Button, Form, Col, Row, InputGroup } from "react-bootstrap";
+import { Button, Form, Col, Row } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
-
-// Import both component for file upload
-import bsCustomFileInput from 'bs-custom-file-input';
-
-// Import both component for select
-import Select from 'react-select'
+import { format } from 'date-fns'
 
 import Loading from "../../../../Loading";
 import AdminLayout from "../../../../Layouts/AdminLayout";
+import { TableSelect } from "../../../../../Components/Table/TableSelect";
 
-export default function EmployeeCreate() {
+import { TRANSPORTTYPECOLUMNS } from "./columns";
+
+export default function LongShipCreate() {
   const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [transportTypes, setTransportTypes] = useState([]);
+
+  const [state, setState] = useState({
+    transport_type_id: 0,
+    transport_type_duration: 0,
+    license_plate: "",
+    estimated_time_of_departure: new Date().getTime()/1000,
+    estimated_time_of_arrival: 10,
+  });
+
   useEffect(() => {
     fetchCreateFormData();
-    return () => {
-      bsCustomFileInput.destroy()
-    }
     // eslint-disable-next-line
   }, [])
 
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [picture, setPicture] = useState([]);
-  const [etOptions, setEtOptions] = useState([])
-  const [dlOptions, setDlOptions] = useState([])
-  const formRef = useRef();
-
-  const [state, setState] = useState({
-    email: "admin123@gmail.com",
-    password: "1111111111",
-    name: "employee Hai",
-    address: "123 tran nao",
-    phone: 909888999,
-    age: 20,
-    gender: "male",
-    avatar: "",
-    identity_card: "24873t2716653826325",
-    employee_type_id: 2,
-    delivery_location_id: 0,
-  });
-
-  const email = state.email;
-  const password = state.password;
-  const name = state.name;
-  const address = state.address;
-  const phone = state.phone;
-  const age = state.age;
-  const gender = state.gender;
-  const identity_card = state.identity_card;
+  const transport_type_id = state.transport_type_id;
+  const transport_type_duration = state.transport_type_duration;
+  const license_plate = state.license_plate;
+  const estimated_time_of_departure = state.estimated_time_of_departure;
+  const estimated_time_of_arrival = state.estimated_time_of_arrival;
 
   const fetchCreateFormData = async () => {
     setIsLoading(true);
@@ -68,7 +50,7 @@ export default function EmployeeCreate() {
       method: "GET",
     };
 
-    return await fetch("/api/employee/create-form-data", requestOptions)
+    return await fetch("/api/long-ship/create-form-data", requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -76,10 +58,9 @@ export default function EmployeeCreate() {
         return res.json();
       })
       .then((json) => {
-        setEtOptions(json.et_options);
-        setDlOptions(json.dl_options);
+        setTransportTypes(json.transport_type_list);
+        console.log(json);
         setIsLoading(false);
-        bsCustomFileInput.init()
       })
       .catch((err) => {
         console.log(err);
@@ -87,87 +68,40 @@ export default function EmployeeCreate() {
   };
 
   const handleChange = (event) => {
-    if (typeof event.target !== "undefined") {
-      const { name, value, valueAsNumber } = event.target;
+    console.log(event)
+    const { name, value, valueAsNumber, valueAsDate } = event.target;
+    if ( name === "estimated_time_of_departure" ) {
+      console.log(valueAsDate.getTime() / 1000)
       setState((prevState) => {
-        return { ...prevState, [name]: valueAsNumber || value };
+        return { ...prevState, 
+          [name]: valueAsDate.getTime() / 1000,
+          estimated_time_of_arrival: (valueAsDate.getTime() / 1000) + prevState.transport_type_duration,
+        }
+        ;
       });
     } else {
-      const { name, value } = event;
       setState((prevState) => {
-        return { ...prevState, [name]: value };
+      return { ...prevState, [name]: valueAsNumber || value };
       });
     }
-  };
-
-  const onChangePicture = e => {
-    setPicture([...picture, e.target.files[0]]);
-  };
-
-  const resetForm = () => {
-    formRef.current.reset()
-    setPicture([]);
-  };
-
-  const submitImage = async () => {
-
-    const config = {
-      file: picture[0],
-      maxSize: 300
-    };
-    const resizedImage = await ResizeImage(config)
-
-    console.log(picture[0].name);
-    let formData = new FormData();
-    formData.append("file", resizedImage, picture[0].name);
-    
-    const requestOptions = {
-      headers: {
-        "X-CSRF-Token": cookies.csrf,
-        Accept: "application/json",
-      },
-      
-      credentials: "include",
-      method: "POST",
-      body: formData,
-    };
-
-    return await fetch("/api/employee/upload/image", requestOptions)
-      .then((res) => {
-        if (res.status !== 201) {
-          return Promise.reject('Bad request sent to server!');
-        }
-        return res.json();
-      })
-      .then(async (data) => { 
-        console.log(data.filename)
-        // Keep in mind this a very dangerous way to change state of component!!!!!
-        state.avatar = data.filename;
-        setState((prevState) => {
-          return { ...prevState, avatar: data.filename };
-        });
-      })
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    return submitImage()
-      .then(() => {
-        const requestOptions = {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-CSRF-Token": cookies.csrf,
-          },
-          
-          credentials: "include",
-          method: "POST",
-          body: JSON.stringify(state),
-        };
-    
-        return fetch("/api/employee/create", requestOptions);
-      })
+    const requestOptions = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-Token": cookies.csrf,
+      },
+      
+      credentials: "include",
+      method: "POST",
+      body: JSON.stringify(state),
+    };
+
+    return fetch("/api/long-ship/create", requestOptions)
       .then((res) => {
         if (res.status !== 201) {
           return Promise.reject('Bad request sent to server!');
@@ -180,198 +114,105 @@ export default function EmployeeCreate() {
       });
   };
 
+  const handleSelectItem = (e) => {
+    console.log(e)
+    setState((prevState) => {
+      return { ...prevState, 
+        transport_type_duration: e.long_ship_duration,
+        transport_type_id: e.id,
+        estimated_time_of_arrival: prevState.estimated_time_of_departure + prevState.transport_type_duration,
+       };
+      });
+  };
+
+  const actionLink = {
+    handleSelectItem: handleSelectItem,
+  };
+
   if (isLoading) {
     return <Loading />;
   } else {
   return (
     <AdminLayout>
-      <p className="employee-create-header">Create employee</p>
-      <Form ref={formRef} className="content" onSubmit={(e) => handleSubmit(e)}>
-        <Form.Group as={Row} controlId="formHorizontalAvatar">
-          <Form.Label column sm={2}>
-            Avatar
-          </Form.Label>
-          <Col sm={10}>
-            <InputGroup>
-              <Form.File
-                name="file"
-                id="custom-file"
-                label="Select file"
-                onChange={onChangePicture}
-                accept="image/*"
-                custom
-                required
-              />
-              <InputGroup.Append>
-                <Button className="btn btn-10" onClick={resetForm}>Remove</Button>
-              </InputGroup.Append>
-            </InputGroup>
-          </Col>
-        </Form.Group>
+      <p className="employee-create-header">Create long ship</p>
+      <Form className="content" onSubmit={(e) => handleSubmit(e)}>
 
-        <Form.Group as={Row} controlId="formHorizontalEmail">
+      <Form.Group as={Row} controlId="formHorizontal1">
           <Form.Label column sm={2}>
-            Email
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={email}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalPassword">
-          <Form.Label column sm={2}>
-            Password
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={password}
-              onChange={handleChange}
-              required
-              minLength="10"
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalName">
-          <Form.Label column sm={2}>
-            Name
+            License Plate
           </Form.Label>
           <Col sm={10}>
             <Form.Control
               type="text"
-              name="name"
-              placeholder="Name"
-              value={name}
+              name="license_plate"
+              placeholder="License plate"
+              value={license_plate}
               onChange={handleChange}
               required
             />
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalAddress">
+        <Form.Group as={Row} controlId="formHorizontal2">
           <Form.Label column sm={2}>
-            Address
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              name="address"
-              placeholder="Address"
-              value={address}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalPhone">
-          <Form.Label column sm={2}>
-            Phone
+            Transport Type ID
           </Form.Label>
           <Col sm={10}>
             <Form.Control
               type="number"
-              name="phone"
-              placeholder="Phone"
-              value={phone}
-              onChange={handleChange}
+              name="transport_type_id"
+              placeholder="Select ID in the table"
+              value={transport_type_id}
               required
-              min="100000000"
-              max="9999999999"
+              disabled={true}
             />
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalAge">
+        <Form.Group as={Row} controlId="formHorizontal4">
           <Form.Label column sm={2}>
-            Age
+            Transport Duration
           </Form.Label>
           <Col sm={10}>
             <Form.Control
               type="number"
-              name="age"
-              value={age}
+              name="transport_type_duration"
+              placeholder="Select ID in the table"
+              value={transport_type_duration}
+              required
+              disabled={true}
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="formHorizontal5">
+          <Form.Label column sm={2}>
+            Select departure date 
+          </Form.Label>
+          <Col sm={10}>
+          <Form.Control
+              type="date"
+              name="estimated_time_of_departure"
+              value={format(new Date(estimated_time_of_departure * 1000), 'yyyy-MM-dd')} 
               onChange={handleChange}
-              min="1"
-              max="99"
               required
             />
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalGender">
-          <Form.Label as="book" column sm={2}>
-            Gender
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Check
-              type="radio"
-              label="Male"
-              value="male"
-              name="gender"
-              id="genderRadios1"
-              onChange={handleChange}
-              checked={gender === "male"}
-            />
-            <Form.Check
-              type="radio"
-              label="Female"
-              value="female"
-              name="gender"
-              id="genderRadios2"
-              onChange={handleChange}
-              checked={gender === "female"}
-            />
-            <Form.Check
-              type="radio"
-              label="Others"
-              value="others"
-              name="gender"
-              id="genderRadios3"
-              onChange={handleChange}
-              checked={gender === "others"}
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalIdentityCard">
+        <Form.Group as={Row} controlId="formHorizontal6">
           <Form.Label column sm={2}>
-            Identity card
+            Arrival date 
           </Form.Label>
           <Col sm={10}>
             <Form.Control
               type="text"
-              name="identity_card"
-              placeholder="Identity Card"
-              value={identity_card}
+              name="estimated_time_of_arrival"
+              value={format(new Date(estimated_time_of_arrival * 1000), 'MM/dd/yyyy')}
               onChange={handleChange}
               required
+              disabled={true}
             />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalSelectEmployeeType">
-          <Form.Label column sm={2}>Employee type</Form.Label>
-          <Col sm={10}>
-            <Select options={etOptions} onChange={handleChange} defaultValue={{ name: "employee_type_id" ,label: "Input staff", value: 2 }}/>
-          </Col>
-
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalSelectDeliveryLocation">
-          <Form.Label column sm={2}>Delivery location</Form.Label>
-          <Col sm={10}>
-          <Select options={dlOptions} onChange={handleChange} />
           </Col>
         </Form.Group>
 
@@ -383,13 +224,18 @@ export default function EmployeeCreate() {
           </Col>
 
           <Col sm={{ span: 1 }}>
-            <Button className="btn-7" onClick={() => history.push("/employee/list")}>
+            <Button className="btn-7" onClick={() => history.push("/long-ship/list")}>
               Cancel
             </Button>
           </Col>
 
         </Form.Group>
       </Form>
+      <hr/>
+        <div>
+          <p className="long-ship-list-header">Transport type list</p>
+        </div>
+        <TableSelect columns={TRANSPORTTYPECOLUMNS} data={transportTypes} actionLink={actionLink}/>
     </AdminLayout>
   );
   }

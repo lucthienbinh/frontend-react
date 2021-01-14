@@ -8,6 +8,8 @@ import { useHistory } from "react-router-dom";
 import AdminLayout from "../../../../Layouts/AdminLayout";
 import Loading from "../../../../Loading";
 
+import { format } from 'date-fns'
+
 export default function LongShipDetail() {
   const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
@@ -20,25 +22,21 @@ export default function LongShipDetail() {
     license_plate: "",
     estimated_time_of_departure: 0,
     estimated_time_of_arrival: 0,
-    current_location
-    current_location
-    current_location
-    current_location
-    current_location
-    current_location
-
-    current_location
-    current_location
-    current_location
-    current_location
-    current_location
-    current_location
-    current_location
-    current_location
-    current_location
-    current_location
-
-    
+    current_location: "",
+    finished: false,
+    ls_qr_code: "",
+    package_loaded: false,
+    empl_load_id: 0,
+    loaded_time: 0,
+    vehicle_started: false,
+    empl_driver_1_id: 0,
+    started_time: 0,
+    vehicle_arrived: false,
+    empl_driver_2_id: 0,
+    arrived_time: 0,
+    package_unloaded: false,
+    empl_unload_id: 0,
+    unloaded_time: 0,     
   });
   const transport_type_id = state.transport_type_id;
   const license_plate = state.license_plate;
@@ -83,7 +81,7 @@ export default function LongShipDetail() {
         return res.json();
       })
       .then((json) => {
-        setState(json.employee_info);
+        setState(json.long_ship_info);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -99,110 +97,161 @@ export default function LongShipDetail() {
       <AdminLayout>
         <p className="customer-detail-header">Long ship detail</p>
         <Form className="content">
-          <Form.Group as={Row} controlId="formHorizontalID">
-            <Form.Label column sm={2}>
-              Avatar
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontalID1">
+            <Form.Label column sm={2}>QR Code</Form.Label>
             <Col sm={10}>
-              <Image className="employee-avatar" src={process.env.REACT_APP_API_IMAGE_URL + "/" + avatar} rounded />
+              <Image className="qr-code" src={process.env.REACT_APP_API_ORCODE_URL + "/" + ls_qr_code} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalID">
-            <Form.Label column sm={2}>
-              ID
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontal2">
+            <Form.Label column sm={2}>ID</Form.Label>
             <Col sm={10}>
               <Form.Control type="number" value={id} disabled={true} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalName">
-            <Form.Label column sm={2}>
-              Name
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontal3">
+            <Form.Label column sm={2}>Transport Type</Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={name} disabled={true} />
+              <Form.Control type="number" value={transport_type_id} disabled={true} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalAge">
-            <Form.Label column sm={2}>
-              Age
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontal4">
+            <Form.Label column sm={2}> Licens Plate</Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={age} disabled={true} />
+              <Form.Control type="text" value={license_plate} disabled={true} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalPhone">
-            <Form.Label column sm={2}>
-              Phone
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontal5">
+            <Form.Label column sm={2}>Time Of Departure</Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={phone} disabled={true} />
+              <Form.Control type="text" value={format(new Date(estimated_time_of_departure * 1000), 'dd/MM/yyyy')} disabled={true} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalGender">
-            <Form.Label column sm={2}>
-              Gender
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontal6">
+            <Form.Label column sm={2}>Time Of Arrival</Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={gender} disabled={true} />
+              <Form.Control type="text" value={format(new Date(estimated_time_of_arrival * 1000), 'dd/MM/yyyy')} disabled={true} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalAddress">
-            <Form.Label column sm={2}>
-              Address
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontal7">
+            <Form.Label column sm={2}>Current Location</Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={address} disabled={true} />
+              <Form.Control type="text" value={current_location} disabled={true} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalIdentityCard">
-            <Form.Label column sm={2}>
-              Identity card
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontal20">
+            <Form.Label column sm={2}>Finished</Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={identity_card} disabled={true} />
+              <Form.Control type="text" value={finished} disabled={true} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalEmployeeTypeName">
-            <Form.Label column sm={2}>
-              Employee type name
-            </Form.Label>
+          <hr/>
+
+          <Form.Group as={Row} controlId="formHorizontal8">
+            <Form.Label column sm={2}>Package Loaded</Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={employee_type_name} disabled={true} />
+              <Form.Control type="text" value={package_loaded} disabled={true} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalDeliveryLocationCity">
-            <Form.Label column sm={2}>
-              Delivery location city
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontal9">
+            <Form.Label column sm={2}>Employee Load ID</Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={delivery_location_city} disabled={true} />
+              <Form.Control type="number" value={empl_load_id} disabled={true} />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="formHorizontalDeliveryLocationDistrict">
-            <Form.Label column sm={2}>
-              Delivery location district
-            </Form.Label>
+          <Form.Group as={Row} controlId="formHorizontal10">
+            <Form.Label column sm={2}>Loaded Time</Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={delivery_location_district} disabled={true} />
+              <Form.Control type="number" value={format(new Date(loaded_time * 1000), 'dd/MM/yyyy')} disabled={true} /> 
             </Col>
           </Form.Group>
+
+          <hr/>
+
+          <Form.Group as={Row} controlId="formHorizontal11">
+            <Form.Label column sm={2}>Vehicle Started</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={vehicle_started} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal12">
+            <Form.Label column sm={2}>Employee Driver 1 ID</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={empl_driver_1_id} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal13">
+            <Form.Label column sm={2}>Started Time</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={format(new Date(started_time * 1000), 'dd/MM/yyyy')} disabled={true} /> 
+            </Col>
+          </Form.Group>
+
+          <hr/>
+
+          <Form.Group as={Row} controlId="formHorizontal14">
+            <Form.Label column sm={2}>Vehicle Arrived</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={vehicle_arrived} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal15">
+            <Form.Label column sm={2}>Employee Driver 2 ID</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={empl_driver_2_id} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal16">
+            <Form.Label column sm={2}>Arrived Time</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={format(new Date(arrived_time * 1000), 'dd/MM/yyyy')} disabled={true} /> 
+            </Col>
+          </Form.Group>
+
+          <hr/>
+
+          <Form.Group as={Row} controlId="formHorizontal17">
+            <Form.Label column sm={2}>Package Unloaded</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={package_unloaded} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal18">
+            <Form.Label column sm={2}>Employee Unload ID</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={empl_unload_id} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal19">
+            <Form.Label column sm={2}>Unloaded Time</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={format(new Date(unloaded_time * 1000), 'dd/MM/yyyy')} disabled={true} /> 
+            </Col>
+          </Form.Group>
+
+          <hr/>
 
           <Form.Group as={Row}>
             <Col sm={{ span: 1, offset: 2 }}>
               <Button
                 className="btn-7"
-                onClick={() => history.push("/employee/list")}
+                onClick={() => history.push("/long-ship/list")}
               >
                 Cancel
               </Button>

@@ -1,74 +1,92 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
-import { Button, Form, Col, Row, InputGroup } from "react-bootstrap";
-import { useHistory, useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { useParams } from "react-router-dom";
+import { Button, Form, Col, Row, Image, Alert } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
-// Import both component for file upload
-import bsCustomFileInput from 'bs-custom-file-input';
-import { ResizeImage } from "../../../../../Components/FileUpload"
-
-// Import both component for select
-import Select from 'react-select'
-
-import Loading from "../../../../Loading";
 import AdminLayout from "../../../../Layouts/AdminLayout";
+import Loading from "../../../../Loading";
 
-export default function EmployeeUpdate() {
+import { format } from 'date-fns'
+
+export default function LongShipUpdate() {
   const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const clearNotify = () => {
+    setSuccessMessage("");
+    setErrorMessage("")
+  }
+
+  const [isLoading, setIsLoading] = useState(true);
   let { id } = useParams();
 
+  const [state, setState] = useState({
+    transport_type_id: 0,
+    license_plate: "",
+    estimated_time_of_departure: 0,
+    estimated_time_of_arrival: 0,
+    current_location: "",
+    finished: false,
+    ls_qr_code: "",
+    package_loaded: false,
+    empl_load_id: 0,
+    loaded_time: 0,
+    vehicle_started: false,
+    empl_driver_1_id: 0,
+    started_time: 0,
+    vehicle_arrived: false,
+    empl_driver_2_id: 0,
+    arrived_time: 0,
+    package_unloaded: false,
+    empl_unload_id: 0,
+    unloaded_time: 0,
+  });
+  const transport_type_id = state.transport_type_id;
+  const license_plate = state.license_plate;
+  const estimated_time_of_departure = state.estimated_time_of_departure;
+  const estimated_time_of_arrival = state.estimated_time_of_arrival;
+  const current_location = state.current_location;
+  const finished = state.finished;
+  const ls_qr_code = state.ls_qr_code;
+
+  // Package Loaded
+  const package_loaded = state.package_loaded;
+  const empl_load_id = state.empl_load_id;
+  const loaded_time = state.loaded_time;
+  // Vehicle Started
+  const vehicle_started = state.vehicle_started;
+  const empl_driver_1_id = state.empl_driver_1_id;
+  const started_time = state.started_time;
+  // Vehicle Arrived
+  const vehicle_arrived = state.vehicle_arrived;
+  const empl_driver_2_id = state.empl_driver_2_id;
+  const arrived_time = state.arrived_time;
+  // Package Unloaded
+  const package_unloaded = state.package_unloaded;
+  const empl_unload_id = state.empl_unload_id;
+  const unloaded_time = state.unloaded_time;
+
   useEffect(() => {
-    fetchUpdateFormData();
-    return () => {
-      bsCustomFileInput.destroy()
-    }
+    fetchCreateFormData();
     // eslint-disable-next-line
   }, [])
 
-  const [isLoading, setIsLoading] = useState(true);
 
-  const [picture, setPicture] = useState([]);
-  const [etOptions, setEtOptions] = useState([])
-  const [dlOptions, setDlOptions] = useState([])
-  const [etSelected, setEtSelected] = useState({})
-  const [dlSelected, setDlSelected] = useState({})
-  const formRef = useRef();
-
-  const [state, setState] = useState({
-    name: "",
-    address: "",
-    phone: 0,
-    age: 0,
-    gender: "",
-    avatar: "",
-    identity_card: "",
-    employee_type_id: 0,
-    delivery_location_id: 0,
-  });
-
-  const name = state.name;
-  const address = state.address;
-  const phone = state.phone;
-  const age = state.age;
-  const gender = state.gender;
-  const identity_card = state.identity_card;
-
-  const fetchUpdateFormData = async () => {
-    setIsLoading(true);
+  const fetchCreateFormData = async () => {
     const requestOptions = {
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
         "X-CSRF-Token": cookies.csrf,
+        Accept: "application/json",
       },
-      
       credentials: "include",
-      method: "GET",
+
     };
 
-    await fetch(`/api/employee/update-form-data/${id}`, requestOptions)
+    fetch(`/api/long-ship/id/${id}`, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -76,308 +94,237 @@ export default function EmployeeUpdate() {
         return res.json();
       })
       .then((json) => {
-        setState(json.employee_info);
-        setEtOptions(json.et_options);
-        setDlOptions(json.dl_options);
-        json.et_options.map((option) => {
-          if (option.value === json.employee_info.employee_type_id) {
-            setEtSelected(option)
-          }
-          return 1;
-        });
-        json.dl_options.map((option) => {
-          if (option.value === json.employee_info.delivery_location_id) {
-            setDlSelected(option)
-          }
-          return 1;
-        });
+        setState(json.long_ship_info);
+        console.log(json.long_ship_info)
         setIsLoading(false);
-        bsCustomFileInput.init()
       })
       .catch((err) => {
         console.log(err);
       });
-
   };
 
-  const handleChange = (event) => {
-    if (typeof event.target !== "undefined") {
-      const { name, value, valueAsNumber } = event.target;
-      setState((prevState) => {
-        return { ...prevState, [name]: valueAsNumber || value };
-      });
-    } else {
-      const { name, value } = event;
-      setState((prevState) => {
-        return { ...prevState, [name]: value };
-      });
-    }
-  };
+  const handleTestAPI = async (api) => {
+    clearNotify();
+    console.log(state);
+    const requestOptions = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-Token": cookies.csrf,
+      },
 
-  const onChangePicture = e => {
-    setPicture([...picture, e.target.files[0]]);
-  };
-
-  const resetForm = () => {
-    formRef.current.reset()
-    setPicture([]);
-  };
-
-  const submitImage = async () => {
-
-    //Source code: https://stackoverflow.com/a/37953610
-    if (picture && picture.length) {
-      const config = {
-        file: picture[0],
-        maxSize: 300
-      };
-      const resizedImage = await ResizeImage(config)
-  
-      let formData = new FormData();
-      formData.append("file", resizedImage, picture[0].name);
-      
-      const requestOptions = {
-        headers: {
-          "X-CSRF-Token": cookies.csrf,
-          Accept: "application/json",
-        },
-        
-        credentials: "include",
-        method: "POST",
-        body: formData,
-      };
-  
-      return await fetch("/api/employee/upload/image", requestOptions)
-        .then((res) => {
-          if (res.status !== 201) {
-            return Promise.reject('Bad request sent to server!');
-          }
-          return res.json();
-        })
-        .then(async (data) => { 
-          console.log(data.filename)
-          // Keep in mind this a very dangerous way to change state of component!!!!!
-          state.avatar = data.filename;
-          setState((prevState) => {
-            return { ...prevState, avatar: data.filename };
-          });
-        })
-    } else {
-      return await console.log();
-    }
-    
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    return submitImage()
-      .then(() => {
-        const requestOptions = {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-CSRF-Token": cookies.csrf,
-          },
-          
-          credentials: "include",
-          method: "PUT",
-          body: JSON.stringify(state),
-        };
-    
-        return fetch(`/api/employee/update/${id}`, requestOptions);
-      })
+      credentials: "include",
+      method: "PUT",
+      body: JSON.stringify(state),
+    };
+    console.log(state);
+    return await fetch(api + id, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
-          return Promise.reject('Bad request sent to server!');
+          return Promise.reject("Bad request sent to server!");
         }
+        fetchCreateFormData()
         return res.json();
       })
-      .then(data => console.log(data))
+      .then(data => setSuccessMessage(data.server_response))
       .catch((err) => {
-        console.log(err);
+        setErrorMessage(err);
       });
   };
+
 
   if (isLoading) {
     return <Loading />;
   } else {
-  return (
-    <AdminLayout>
-      <p className="employee-create-header">Update employee</p>
-      <Form ref={formRef} className="content" onSubmit={(e) => handleSubmit(e)}>
-        <Form.Group as={Row} controlId="formHorizontalAvatar">
-          <Form.Label column sm={2}>
-            Avatar
-          </Form.Label>
+    return (
+      <AdminLayout>
+        <p className="longship-update-header">Long ship update</p>
+
+        {successMessage !== "" ? (<Alert key={3} variant="success">Server response: {successMessage}</Alert>) : (<></>)}
+        {errorMessage !== "" ? (<Alert key={3} variant="danger">Server response: {errorMessage}</Alert>) : (<></>)}
+
+        <hr />
+        <Form.Group as={Row} controlId="buttongroup">
+          <Form.Label column sm={2}>Test API</Form.Label>
           <Col sm={10}>
-            <InputGroup>
-              <Form.File
-                name="file"
-                id="custom-file"
-                label="Select file"
-                onChange={onChangePicture}
-                accept="image/*"
-                custom
-              />
-              <InputGroup.Append>
-                <Button className="btn btn-10" onClick={resetForm}>Remove</Button>
-              </InputGroup.Append>
-            </InputGroup>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/long-ship/update-load-package/")}>
+              Package Loaded
+            </Button>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/long-ship/update-start-vehicle/")}>
+              Vehicle Started
+            </Button>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/long-ship/update-vehicle-arrived/")}>
+              Vehicle Arrived
+            </Button>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/long-ship/update-unload-package/")}>
+              Package Unloaded
+            </Button>
           </Col>
         </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalName">
-          <Form.Label column sm={2}>
-            Name
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={name}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalAddress">
-          <Form.Label column sm={2}>
-            Address
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              name="address"
-              placeholder="Address"
-              value={address}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalPhone">
-          <Form.Label column sm={2}>
-            Phone
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="number"
-              name="phone"
-              placeholder="Phone"
-              value={phone}
-              onChange={handleChange}
-              required
-              min="100000000"
-              max="9999999999"
-            />
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="formHorizontalAge">
-          <Form.Label column sm={2}>
-            Age
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="number"
-              name="age"
-              value={age}
-              onChange={handleChange}
-              min="1"
-              max="99"
-              required
-            />
-          </Col>
-        </Form.Group>
-
-        <fieldset>
-          <Form.Group as={Row} controlId="formHorizontalGender">
-            <Form.Label as="book" column sm={2}>
-              Gender
-            </Form.Label>
+        <hr />
+        <Form className="content">
+          <Form.Group as={Row} controlId="formHorizontalID1">
+            <Form.Label column sm={2}>QR Code</Form.Label>
             <Col sm={10}>
-              <Form.Check
-                type="radio"
-                label="Male"
-                value="male"
-                name="gender"
-                id="genderRadios1"
-                onChange={handleChange}
-                checked={gender === "male"}
-              />
-              <Form.Check
-                type="radio"
-                label="Female"
-                value="female"
-                name="gender"
-                id="genderRadios2"
-                onChange={handleChange}
-                checked={gender === "female"}
-              />
-              <Form.Check
-                type="radio"
-                label="Others"
-                value="others"
-                name="gender"
-                id="genderRadios3"
-                onChange={handleChange}
-                checked={gender === "others"}
-              />
+              <Image className="qr-code" src={process.env.REACT_APP_API_ORCODE_URL + "/" + ls_qr_code} />
             </Col>
           </Form.Group>
-        </fieldset>
 
-        <Form.Group as={Row} controlId="formHorizontalIdentityCard">
-          <Form.Label column sm={2}>
-            Identity card
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              name="identity_card"
-              placeholder="Identity Card"
-              value={identity_card}
-              onChange={handleChange}
-              required
-            />
-          </Col>
-        </Form.Group>
+          <Form.Group as={Row} controlId="formHorizontal2">
+            <Form.Label column sm={2}>ID</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={id} disabled={true} />
+            </Col>
+          </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalSelectEmployeeType">
-          <Form.Label column sm={2}>Employee type</Form.Label>
-          <Col sm={10}>
-            <Select options={etOptions} onChange={handleChange} defaultValue={etSelected}/>
-          </Col>
+          <Form.Group as={Row} controlId="formHorizontal3">
+            <Form.Label column sm={2}>Transport Type</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={transport_type_id} disabled={true} />
+            </Col>
+          </Form.Group>
 
-        </Form.Group>
+          <Form.Group as={Row} controlId="formHorizontal4">
+            <Form.Label column sm={2}> Licens Plate</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={license_plate} disabled={true} />
+            </Col>
+          </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontalSelectDeliveryLocation">
-          <Form.Label column sm={2}>Delivery location</Form.Label>
-          <Col sm={10}>
-          <Select options={dlOptions} onChange={handleChange} defaultValue={dlSelected}/>
-          </Col>
-        </Form.Group>
+          <Form.Group as={Row} controlId="formHorizontal5">
+            <Form.Label column sm={2}>Time Of Departure</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={format(new Date(estimated_time_of_departure * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
+            </Col>
+          </Form.Group>
 
-        <Form.Group as={Row}>
-          <Col sm={{ span: 1, offset: 2 }}>
-            <Button className="btn-6" type="submit">
-              Update
-            </Button>
-          </Col>
+          <Form.Group as={Row} controlId="formHorizontal6">
+            <Form.Label column sm={2}>Time Of Arrival</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={format(new Date(estimated_time_of_arrival * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
+            </Col>
+          </Form.Group>
 
-          <Col sm={{ span: 1 }}>
-            <Button className="btn-7" onClick={() => history.push("/employee/list")}>
-              Cancel
-            </Button>
-          </Col>
+          <Form.Group as={Row} controlId="formHorizontal7">
+            <Form.Label column sm={2}>Current Location</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={current_location} disabled={true} />
+            </Col>
+          </Form.Group>
 
-        </Form.Group>
-      </Form>
-    </AdminLayout>
-  );
+          <Form.Group as={Row} controlId="formHorizontal20">
+            <Form.Label column sm={2}>Finished</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={finished} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <hr />
+
+          <Form.Group as={Row} controlId="formHorizontal8">
+            <Form.Label column sm={2}>Package Loaded</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={package_loaded} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal9">
+            <Form.Label column sm={2}>Employee Load ID</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={empl_load_id} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal10">
+            <Form.Label column sm={2}>Loaded Time</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={format(new Date(loaded_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <hr />
+
+          <Form.Group as={Row} controlId="formHorizontal11">
+            <Form.Label column sm={2}>Vehicle Started</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={vehicle_started} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal12">
+            <Form.Label column sm={2}>Employee Driver 1 ID</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={empl_driver_1_id} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal13">
+            <Form.Label column sm={2}>Started Time</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={format(new Date(started_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <hr />
+
+          <Form.Group as={Row} controlId="formHorizontal14">
+            <Form.Label column sm={2}>Vehicle Arrived</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={vehicle_arrived} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal15">
+            <Form.Label column sm={2}>Employee Driver 2 ID</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={empl_driver_2_id} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal16">
+            <Form.Label column sm={2}>Arrived Time</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={format(new Date(arrived_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <hr />
+
+          <Form.Group as={Row} controlId="formHorizontal17">
+            <Form.Label column sm={2}>Package Unloaded</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={package_unloaded} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal18">
+            <Form.Label column sm={2}>Employee Unload ID</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="number" value={empl_unload_id} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="formHorizontal19">
+            <Form.Label column sm={2}>Unloaded Time</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={format(new Date(unloaded_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
+            </Col>
+          </Form.Group>
+
+          <hr />
+
+          <Form.Group as={Row}>
+            <Col sm={{ span: 1, offset: 2 }}>
+              <Button
+                className="btn-7"
+                onClick={() => history.push("/long-ship/list")}
+              >
+                Cancel
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
+      </AdminLayout>
+    );
   }
 }

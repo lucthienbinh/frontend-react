@@ -43,6 +43,10 @@ const AdminLinks = [
         href: "/order/list",
         name: "Order list",
     },
+    {
+        href: "/order-short-ship/list/",
+        name: "Order short ship",
+    },
 ];
 
 export default AdminLinks;

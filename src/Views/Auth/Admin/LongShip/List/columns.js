@@ -41,14 +41,7 @@ export const LONGSHIPCOLUMNS = [
     Cell: ({ value }) => {
       let valueParse = value ? "Yes" : "No"
       return (
-        <div
-          style={{
-            whiteSpace: "nowrap",
-            width: 110,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }} > { valueParse}
-        </div>
+        <div> {valueParse} </div>
       )
     },
   },

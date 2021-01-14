@@ -30,12 +30,14 @@ import TransportTypeUpdate from '../Auth/Admin/TransportType/Update';
 import LongShipList from '../Auth/Admin/LongShip/List';
 import LongShipDetail from '../Auth/Admin/LongShip/Detail';
 import LongShipCreate from '../Auth/Admin/LongShip/Create';
-// import LongShipUpdate from '../Auth/Admin/LongShip/Update';
+import LongShipUpdate from '../Auth/Admin/LongShip/Update';
 
 import OrderList from '../Auth/Admin/Order/List';
 import OrderDetail from '../Auth/Admin/Order/Detail';
 import OrderCreate from '../Auth/Admin/Order/Create';
 
+import OrderShortShipList from '../Auth/Admin/OrderShortShip/List';
+import OrderShortShipUpdate from '../Auth/Admin/OrderShortShip/Update';
 
 export default function App() {
   // const [cookies] = useCookies(['csrf']);
@@ -72,9 +74,12 @@ export default function App() {
         <Route exact path="/long-ship/list" component={LongShipList} />
         <Route exact path="/long-ship/detail/:id" component={LongShipDetail} />
         <Route exact path="/long-ship/create" component={LongShipCreate} />
+        <Route exact path="/long-ship/update/:id" component={LongShipUpdate} />
         <Route exact path="/order/list" component={OrderList} />
         <Route exact path="/order/detail/:id" component={OrderDetail} />
         <Route exact path="/order/create" component={OrderCreate} />
+        <Route exact path="/order-short-ship/list" component={OrderShortShipList} /> 
+        <Route exact path="/order-short-ship/update/:id" component={OrderShortShipUpdate} />
       </Switch>
     </Router>
   );

@@ -66,7 +66,8 @@ export default function LongShipCreate() {
       })
       .then((json) => {
         setTransportTypes(json.transport_type_list);
-        console.log(json);
+        console.log(Math.floor(new Date().getTime()/1000));
+        console.log(new Date().getTime());
         setIsLoading(false);
       })
       .catch((err) => {
@@ -78,14 +79,27 @@ export default function LongShipCreate() {
     console.log(event)
     console.log(state)
     const { name, value, valueAsNumber, valueAsDate } = event.target;
-    if ( name === "estimated_time_of_departure" ) {
-      console.log(valueAsDate.getTime() / 1000)
+    if ( name === "select_date_of_departure" ) {
+      // Source: https://stackoverflow.com/a/7195589
+      const startOfDay = new Date(valueAsDate.getFullYear(), valueAsDate.getMonth(), valueAsDate.getDate());
+      const timestamp = startOfDay / 1000;
       setState((prevState) => {
         return { ...prevState, 
-          [name]: Math.floor(valueAsDate.getTime() / 1000),
-          estimated_time_of_arrival: Math.floor(valueAsDate.getTime() / 1000) + prevState.transport_type_duration,
+          estimated_time_of_departure: timestamp,
+          estimated_time_of_arrival: timestamp + prevState.transport_type_duration,
         }
         ;
+      });
+    } else if (name === "select_time_of_departure" ) {
+      const timestamp = valueAsNumber / 1000;
+      setState((prevState) => {
+        const prevDeptTime = new Date(prevState.estimated_time_of_departure * 1000);
+        const startOfDay = new Date(prevDeptTime.getFullYear(), prevDeptTime.getMonth(), prevDeptTime.getDate());
+        const startOfDayUnix = startOfDay / 1000;
+        
+        const newDeparture = startOfDayUnix + timestamp;
+        const newArrival = startOfDayUnix + timestamp + transport_type_duration;
+      return { ...prevState, estimated_time_of_departure: newDeparture, estimated_time_of_arrival: newArrival};
       });
     } else {
       setState((prevState) => {
@@ -127,20 +141,20 @@ export default function LongShipCreate() {
       });
   };
 
-  const handleSelectItem = (e) => {
-    clearNotify()
-    console.log(e)
-    setState((prevState) => {
-      return { ...prevState, 
-        transport_type_duration: e.long_ship_duration,
-        transport_type_id: e.id,
-        estimated_time_of_arrival: prevState.estimated_time_of_departure + prevState.transport_type_duration,
-       };
-      });
-  };
-
   const actionLink = {
-    handleSelectItem: handleSelectItem,
+    handleSelectItem: (e) => {
+      clearNotify()
+      console.log(e)
+      setState((prevState) => {
+        console.log(prevState)
+        return {
+          ...prevState,
+          transport_type_duration: e.long_ship_duration,
+          transport_type_id: e.id,
+          estimated_time_of_arrival: prevState.estimated_time_of_departure + e.long_ship_duration,
+        };
+      });
+    },
   };
 
   if (isLoading) {
@@ -184,9 +198,9 @@ export default function LongShipCreate() {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontal4">
+        <Form.Group as={Row} controlId="formHorfizontal4">
           <Form.Label column sm={2}>
-            Transport Duration
+            Duration In Second
           </Form.Label>
           <Col sm={10}>
             <Form.Control
@@ -200,15 +214,30 @@ export default function LongShipCreate() {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="formHorizontal5">
+        <Form.Group as={Row} controlId="formHorizodntal5">
           <Form.Label column sm={2}>
             Select departure date 
           </Form.Label>
           <Col sm={10}>
           <Form.Control
               type="date"
-              name="estimated_time_of_departure"
+              name="select_date_of_departure"
               value={format(new Date(estimated_time_of_departure * 1000), 'yyyy-MM-dd')} 
+              onChange={handleChange}
+              required
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} controlId="formHforizontal5">
+          <Form.Label column sm={2}>
+            Select departure time 
+          </Form.Label>
+          <Col sm={10}>
+          <Form.Control
+              type="time"
+              name="select_time_of_departure"
+              value={format(new Date(estimated_time_of_departure * 1000), 'HH:mm:ss')} 
               onChange={handleChange}
               required
             />
@@ -217,13 +246,13 @@ export default function LongShipCreate() {
 
         <Form.Group as={Row} controlId="formHorizontal6">
           <Form.Label column sm={2}>
-            Arrival date 
+            Arrival time 
           </Form.Label>
           <Col sm={10}>
             <Form.Control
               type="text"
               name="estimated_time_of_arrival"
-              value={format(new Date(estimated_time_of_arrival * 1000), 'MM/dd/yyyy')}
+              value={format(new Date(estimated_time_of_arrival * 1000), 'MM/dd/yyyy HH:mm:ss')}
               onChange={handleChange}
               required
               disabled={true}

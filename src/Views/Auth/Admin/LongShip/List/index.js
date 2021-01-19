@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
+import { Card, Row, Col } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 
@@ -15,6 +16,10 @@ export default function LongShipList() {
   const [longShips, setLongShips] = useState([]);
   const [transportTypes, setTransportTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const [availableTotal, setAvailableTotal] = useState(0);
+  const [runningTotal, setRunningTotal] = useState(0);
+  const [finishedTotal, setFinishedTotal] = useState(0);
 
   useEffect(() => {
     fetchLongShipList();
@@ -44,6 +49,9 @@ export default function LongShipList() {
       .then((json) => {
         setLongShips(json.long_ship_list);
         setTransportTypes(json.transport_type_list);
+        setAvailableTotal(json.available_total);
+        setRunningTotal(json.running_total);
+        setFinishedTotal(json.finished_total);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -87,11 +95,59 @@ export default function LongShipList() {
     handleDelete,
   };
 
+  const Cards = () => {
+    return (
+      <Row>
+        <Col>
+          <Card border="primary" style={{ width: '13rem', margin: '1rem' }}>
+            <Card.Header>Total</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                {longShips.length} long ship(s).
+            </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card border="info" style={{ width: '13rem', margin: '1rem' }}>
+            <Card.Header>Available (waiting)</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                {availableTotal} long ship(s).
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card border="success" style={{ width: '13rem', margin: '1rem' }}>
+            <Card.Header>Running</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                {runningTotal} long ship(s).
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card border="dark" style={{ width: '13rem', margin: '1rem' }}>
+            <Card.Header>Finished</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                {finishedTotal} long ship(s).
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    )
+  }
+
   if (isLoading) {
     return <Loading />;
   } else {
     return (
       <AdminLayout>
+        {Cards()}
         <div>
           <p className="long-ship-list-header">Long ship list</p>
           <Link to={'/long-ship/create'} className="btn long-ship-list-create-button">Create</Link>

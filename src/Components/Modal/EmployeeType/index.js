@@ -93,11 +93,11 @@ export default function EmployeeTypeModal(props) {
           },
           content: {
             position: "absolute",
-            width: "400px",
-            height: "210px",
+            width: "420px",
+            height: "230px",
             top: "40%",
             margin: "0 auto",
-            border: "3px solid #ccc",
+            border: "1px solid #ccc",
             background: "#fff",
             overflow: "auto",
             WebkitOverflowScrolling: "touch",
@@ -110,6 +110,7 @@ export default function EmployeeTypeModal(props) {
         <div className="employee-type-modal-align-center">
           <h2>{modalName}</h2>
         </div>
+        <hr/>
         <Form className="content">
           <Form.Group as={Row} controlId="formHorizontal">
             <Form.Label column sm={2}>

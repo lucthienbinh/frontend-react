@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
+import { Card, Row, Col } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 
@@ -14,6 +15,10 @@ export default function EmployeeList() {
 
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [inputStaffTotal, setInputStaffTotal] = useState(0);
+  const [deliveryStaffTotal, setDeliveryStaffTotal] = useState(0);
+  const [loadPackageStaffTotal, setLoadPackageStaffTotal] = useState(0);
 
   useEffect(() => {
     fetchEmployeeList();
@@ -42,6 +47,9 @@ export default function EmployeeList() {
       })
       .then((json) => {
         setEmployees(json.employee_list);
+        setInputStaffTotal(json.input_staff_total);
+        setDeliveryStaffTotal(json.delivery_staff_total);
+        setLoadPackageStaffTotal(json.load_package_staff_total);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -85,11 +93,59 @@ export default function EmployeeList() {
     handleDelete: handleDelete,
   };
 
+  const Cards = () => {
+    return (
+      <Row>
+        <Col>
+          <Card border="primary" style={{ width: '13rem', margin: '1rem' }}>
+            <Card.Header>Total</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                {employees.length} employee(s).
+            </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card border="success" style={{ width: '13rem', margin: '1rem' }}>
+            <Card.Header>Input staff</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                {inputStaffTotal} employee(s).
+            </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card border="danger" style={{ width: '13rem', margin: '1rem' }}>
+            <Card.Header>Delivery staff</Card.Header>
+            <Card.Body>
+              <Card.Text>
+              {deliveryStaffTotal} employee(s).
+          </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card border="info" style={{ width: '13rem', margin: '1rem' }}>
+            <Card.Header>Load package staff</Card.Header>
+            <Card.Body>
+              <Card.Text>
+              {loadPackageStaffTotal} employee(s).
+          </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    )
+  }
+
   if (isLoading) {
     return <Loading />;
   } else {
     return (
       <AdminLayout>
+        {Cards()}
         <div>
           <p className="employee-list-header">Employee list</p>
           <Link to={'/employee/create'} className="btn employee-list-create-button">Create</Link>

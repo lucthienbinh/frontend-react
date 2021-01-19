@@ -98,10 +98,10 @@ export default function LocationModal(props) {
           content: {
             position: "absolute",
             width: "600px",
-            height: "240px",
+            height: "260px",
             top: "30%",
             margin: "0 auto",
-            border: "3px solid #ccc",
+            border: "1px solid #ccc",
             background: "#fff",
             overflow: "auto",
             WebkitOverflowScrolling: "touch",
@@ -114,6 +114,7 @@ export default function LocationModal(props) {
         <div className="location-modal-align-center">
           <h2>{modalName}</h2>
         </div>
+        <hr/>
         <Form className="content">
           <Form.Group as={Row} controlId="formHorizontalEmail">
             <Form.Label column sm={2}>

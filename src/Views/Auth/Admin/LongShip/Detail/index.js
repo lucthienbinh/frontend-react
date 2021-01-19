@@ -172,7 +172,7 @@ export default function LongShipDetail() {
           <Form.Group as={Row} controlId="formHorizontal10">
             <Form.Label column sm={2}>Loaded Time</Form.Label>
             <Col sm={10}>
-              <Form.Control type="number" value={format(new Date(loaded_time * 1000), 'dd/MM/yyyy')} disabled={true} /> 
+            <Form.Control type="text" value={format(new Date(loaded_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
             </Col>
           </Form.Group>
 
@@ -195,7 +195,7 @@ export default function LongShipDetail() {
           <Form.Group as={Row} controlId="formHorizontal13">
             <Form.Label column sm={2}>Started Time</Form.Label>
             <Col sm={10}>
-              <Form.Control type="number" value={format(new Date(started_time * 1000), 'dd/MM/yyyy')} disabled={true} /> 
+            <Form.Control type="text" value={format(new Date(started_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
             </Col>
           </Form.Group>
 
@@ -218,7 +218,7 @@ export default function LongShipDetail() {
           <Form.Group as={Row} controlId="formHorizontal16">
             <Form.Label column sm={2}>Arrived Time</Form.Label>
             <Col sm={10}>
-              <Form.Control type="number" value={format(new Date(arrived_time * 1000), 'dd/MM/yyyy')} disabled={true} /> 
+            <Form.Control type="text" value={format(new Date(arrived_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
             </Col>
           </Form.Group>
 
@@ -241,7 +241,7 @@ export default function LongShipDetail() {
           <Form.Group as={Row} controlId="formHorizontal19">
             <Form.Label column sm={2}>Unloaded Time</Form.Label>
             <Col sm={10}>
-              <Form.Control type="number" value={format(new Date(unloaded_time * 1000), 'dd/MM/yyyy')} disabled={true} /> 
+            <Form.Control type="text" value={format(new Date(unloaded_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
             </Col>
           </Form.Group>
 

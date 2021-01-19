@@ -1,6 +1,6 @@
-.long-ship-list-header {
+.long-ship-list-dashboard {
     text-align: center;
-    padding: 1rem;
+    padding: 0.5rem;
     font-size: 3rem;
 }
 
@@ -8,6 +8,7 @@
     width: 150px;
     float: right;
     height: 60px;
+    margin-top: 0.5rem;
     margin-right: 1.5rem;
     margin-bottom: 1.5rem;
     background-color: #c4ac84 !important;

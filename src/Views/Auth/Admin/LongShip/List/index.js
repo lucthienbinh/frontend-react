@@ -17,7 +17,9 @@ export default function LongShipList() {
   const [transportTypes, setTransportTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
+  const [longShipTotal, setLongShipTotal] = useState(0);
   const [availableTotal, setAvailableTotal] = useState(0);
+  const [readyTotal, setReadyTotal] = useState(0);
   const [runningTotal, setRunningTotal] = useState(0);
   const [finishedTotal, setFinishedTotal] = useState(0);
 
@@ -26,7 +28,7 @@ export default function LongShipList() {
     // eslint-disable-next-line
   }, []);
 
-  const fetchLongShipList = async () => {
+  const fetchLongShipList = async (URLString) => {
     setIsLoading(true);
     const requestOptions = {
       headers: {
@@ -38,8 +40,8 @@ export default function LongShipList() {
       credentials: "include",
       method: "GET",
     };
-
-    return await fetch("/api/long-ship/list", requestOptions)
+    const newURL = URLString || "/api/long-ship/list";
+    return await fetch(newURL, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -49,6 +51,8 @@ export default function LongShipList() {
       .then((json) => {
         setLongShips(json.long_ship_list);
         setTransportTypes(json.transport_type_list);
+        setLongShipTotal(json.long_ship_total);
+        setReadyTotal(json.ready_total);
         setAvailableTotal(json.available_total);
         setRunningTotal(json.running_total);
         setFinishedTotal(json.finished_total);
@@ -99,42 +103,42 @@ export default function LongShipList() {
     return (
       <Row>
         <Col>
-          <Card border="primary" style={{ width: '13rem', margin: '1rem' }}>
+          <Card border="primary" style={{ width: '10rem', margin: '1rem' }}>
             <Card.Header>Total</Card.Header>
             <Card.Body>
-              <Card.Text>
-                {longShips.length} long ship(s).
-            </Card.Text>
+            <Card.Link href="#" onClick={() => fetchLongShipList()}>{longShipTotal} long ship(s).</Card.Link>
             </Card.Body>
           </Card>
         </Col>
         <Col>
-          <Card border="info" style={{ width: '13rem', margin: '1rem' }}>
-            <Card.Header>Available (waiting)</Card.Header>
+          <Card border="info" style={{ width: '10rem', margin: '1rem' }}>
+            <Card.Header>Available (wait)</Card.Header>
             <Card.Body>
-              <Card.Text>
-                {availableTotal} long ship(s).
-              </Card.Text>
+              <Card.Link href="#" onClick={() => fetchLongShipList("/api/long-ship/list?sortByCondition=available")}>{availableTotal} long ship(s).</Card.Link>
             </Card.Body>
           </Card>
         </Col>
         <Col>
-          <Card border="success" style={{ width: '13rem', margin: '1rem' }}>
+          <Card border="info" style={{ width: '10rem', margin: '1rem' }}>
+            <Card.Header>Ready to run</Card.Header>
+            <Card.Body>
+              <Card.Link href="#" onClick={() => fetchLongShipList("/api/long-ship/list?sortByCondition=ready")}>{readyTotal} long ship(s).</Card.Link>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card border="success" style={{ width: '10rem', margin: '1rem' }}>
             <Card.Header>Running</Card.Header>
             <Card.Body>
-              <Card.Text>
-                {runningTotal} long ship(s).
-              </Card.Text>
+              <Card.Link href="#" onClick={() => fetchLongShipList("/api/long-ship/list?sortByCondition=running")}>{runningTotal} long ship(s).</Card.Link>
             </Card.Body>
           </Card>
         </Col>
         <Col>
-          <Card border="dark" style={{ width: '13rem', margin: '1rem' }}>
+          <Card border="dark" style={{ width: '10rem', margin: '1rem' }}>
             <Card.Header>Finished</Card.Header>
             <Card.Body>
-              <Card.Text>
-                {finishedTotal} long ship(s).
-              </Card.Text>
+            <Card.Link href="#" onClick={() => fetchLongShipList("/api/long-ship/list?sortByCondition=finished")}> {finishedTotal} long ship(s).</Card.Link>
             </Card.Body>
           </Card>
         </Col>
@@ -147,9 +151,10 @@ export default function LongShipList() {
   } else {
     return (
       <AdminLayout>
+        <p className="long-ship-list-dashboard">Long ship dashboard</p>
         {Cards()}
+        <hr/>
         <div>
-          <p className="long-ship-list-header">Long ship list</p>
           <Link to={'/long-ship/create'} className="btn long-ship-list-create-button">Create</Link>
         </div>
         <TableLink columns={LONGSHIPCOLUMNS} data={longShips} actionLink={actionLink} />

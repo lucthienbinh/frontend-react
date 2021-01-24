@@ -113,7 +113,7 @@ export default function OrderShortShipUpdate() {
         return res.json();
       })
       .then((json) => {
-        setState(json.order_long_ship_info);
+        setState(json.order_short_ship_info);
         setIsLoading(false);
         bsCustomFileInput.init()
       })

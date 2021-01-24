@@ -78,7 +78,7 @@ export default function TransportTypeDetail() {
   } else {
     return (
       <AdminLayout>
-        <p className="customer-detail-header">Long ship detail</p>
+        <p className="customer-detail-header">Order detail</p>
         <Form className="content">
 
         <Form.Group as={Row} controlId="formHorizontal2">

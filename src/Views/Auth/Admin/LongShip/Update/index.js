@@ -166,7 +166,7 @@ export default function LongShipUpdate() {
           <Form.Group as={Row} controlId="formHorizontalID1">
             <Form.Label column sm={2}>QR Code</Form.Label>
             <Col sm={10}>
-              <Image className="qr-code" src={process.env.REACT_APP_API_ORCODE_URL + "/" + ls_qr_code} />
+              <Image className="qr-code" src={process.env.REACT_APP_API_ORCODE_URL + ls_qr_code} />
             </Col>
           </Form.Group>
 

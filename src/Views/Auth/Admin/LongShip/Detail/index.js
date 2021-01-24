@@ -119,7 +119,7 @@ export default function LongShipDetail() {
           </Form.Group>
 
           <Form.Group as={Row} controlId="formHorizontal4">
-            <Form.Label column sm={2}> Licens Plate</Form.Label>
+            <Form.Label column sm={2}> License Plate</Form.Label>
             <Col sm={10}>
               <Form.Control type="text" value={license_plate} disabled={true} />
             </Col>

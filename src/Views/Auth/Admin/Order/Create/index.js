@@ -71,16 +71,16 @@ export default function OrderCreate() {
   const [state, setState] = useState({
     weight: 1,
     volume: 1,
-    type: "123",
+    type: "Normal",
     customer_send_id: 1,
     customer_receive_id: 0,
-    sender: "123 Vie ",
-    receiver: "123 Vie ",
-    transport_type_id: 3,
-    detail: "123 Vie ",
-    note: "123 Vie ",
+    sender: "Customer one - 231-233 Le Hong Phong - 6578678678",
+    receiver: "Customer two - 12 Bich Hoa - 6578678333",
+    transport_type_id: 0,
+    detail: "Dien thoai iphone 12",
+    note: "Can than hang de vo",
     use_long_ship: true,
-    long_ship_id: 1,
+    long_ship_id: 0,
     short_ship_distance: 20,
   });
   const weight = state.weight;
@@ -104,8 +104,12 @@ export default function OrderCreate() {
   };
 
   const handleSubmit = (e) => {
-    clearNotify()
     e.preventDefault();
+    if (long_ship_id === 0) {
+      setErrorMessage("Please select the long ship in the below table")
+      return
+    }
+    clearNotify()
 
     const requestOptions = {
       headers: {

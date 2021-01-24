@@ -369,10 +369,12 @@ export default function OrderShortShipUpdate() {
 
           <hr />
 
-          <Form.Group as={Row} controlId="formHorizontal11">
-            <Form.Label column sm={2}>ShipperConfirmed</Form.Label>
+          <Form.Group as={Row} controlId="formHorizontalgID">
+            <Form.Label column sm={2}>
+              Shipper Confirmed
+            </Form.Label>
             <Col sm={10}>
-              <Form.Control type="text" value={shipper_confirmed} disabled={true} />
+              <Image className="employee-avatar" src={process.env.REACT_APP_API_IMAGE_URL + shipper_confirmed} />
             </Col>
           </Form.Group>
 

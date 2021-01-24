@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
-import { Button, Form, Col, Row } from "react-bootstrap";
+import { Button, Form, Col, Row, Image } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 
 import AdminLayout from "../../../../Layouts/AdminLayout";
@@ -19,6 +19,7 @@ export default function TransportTypeDetail() {
     weight: 0,
     volume: 0,
     type: "",
+    image: "",
     customer_send_id: 0,
     customer_receive_id: 0,
     sender: "",
@@ -35,6 +36,7 @@ export default function TransportTypeDetail() {
   const weight = state.weight;
   const volume = state.volume;
   const type = state.type;
+  const image  = state.image;
   const customer_send_id = state.customer_send_id;
   const customer_receive_id = state.customer_receive_id;
   const sender = state.sender;
@@ -81,7 +83,18 @@ export default function TransportTypeDetail() {
         <p className="customer-detail-header">Order detail</p>
         <Form className="content">
 
-        <Form.Group as={Row} controlId="formHorizontal2">
+          <Form.Group as={Row} controlId="formHorizontalgID">
+            <Form.Label column sm={2}>
+              Image
+            </Form.Label>
+            <Col sm={10}>
+              <Image className="employee-avatar" src={process.env.REACT_APP_API_IMAGE_URL + "/" + image} />
+            </Col>
+          </Form.Group>
+
+          <hr/>
+          
+          <Form.Group as={Row} controlId="formHorizontal2">
             <Form.Label column sm={2}>ID</Form.Label>
             <Col sm={10}>
               <Form.Control type="number" value={id} disabled={true} />

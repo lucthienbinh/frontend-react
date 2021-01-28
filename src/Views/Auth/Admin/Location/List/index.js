@@ -18,7 +18,7 @@ export default function LocationList() {
   const [isLoading, setIsLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [disabledInput, setDisabledInput] = useState(false);
-
+1
   useEffect(() => {
     fetchLocationList();
     // eslint-disable-next-line

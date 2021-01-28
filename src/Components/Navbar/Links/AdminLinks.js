@@ -8,8 +8,8 @@ const AdminLinks = [
                 name: "Customer list",
             },
             {
-                href: "/customer/create",
-                name: "Create customer",
+                href: "/customer-credit/list",
+                name: "Customer credit list",
             },
         ]
     },

@@ -30,7 +30,6 @@ export default function Zeebe() {
 
   const handleTestAPI = async (api) => {
     clearNotify();
-
     const requestOptions = {
       headers: {
         Accept: "application/json",
@@ -48,7 +47,14 @@ export default function Zeebe() {
         }
         return res.json();
       })
-      .then(data => setSuccessMessage(data.server_response))
+      .then(data => {
+        if (data.server_response !== undefined) {
+          setSuccessMessage(data.server_response);
+        } else {
+          let string = "Workflow key: "+ data.workflowkey + " Workflow instance key: " + data.workflowInstanceKey;
+          setSuccessMessage(string);
+        }
+      })
       .catch((err) => {
         setErrorMessage(err);
       });
@@ -62,38 +68,42 @@ export default function Zeebe() {
       {errorMessage !== "" ? (<Alert key={3} variant="danger">Server response: {errorMessage}</Alert>) : (<></>)}
 
       <hr />
-      <p className="longship-update-header2">Long Ship Workflow</p>
+      <p className="longship-update-header2">Order (Full Ship) Workflow</p>
       <Form className="content">
         <Form.Group as={Row} controlId="buttongroup">
-          <Form.Label column sm={2}>Test API</Form.Label>
+          <Form.Label column sm={2}>Test Deploy API</Form.Label>
           <Col sm={10}>
-            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/deploy-long-ship-workflow")}>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/full-ship-workflow/deploy")}>
               Deploy Workflow
             </Button>
-            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/create-instance")}>
-              Create Instance
+          </Col>
+        </Form.Group>
+      </Form>
+      <Form className="content">
+        <Form.Group as={Row} controlId="buttongroup">
+          <Form.Label column sm={2}>Create Instance API</Form.Label>
+          <Col sm={10}>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/full-ship-workflow/create-instance")}>
+              Good
             </Button>
-            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/create-instance-with-bug")}>
-              Create Instance (With Bug)
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/full-ship-workflow/create-instance-internal-bug")}>
+              Internal Server Bug
+            </Button>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/full-ship-workflow/create-instance-missing-param-bug")}>
+              Missing Parameter Bug
             </Button>
           </Col>
         </Form.Group>
       </Form>
 
       <hr />
-      <p className="longship-update-header2">Order Workflow</p>
+      <p className="longship-update-header2">Long Ship Workflow</p>
       <Form className="content">
         <Form.Group as={Row} controlId="buttongroup">
           <Form.Label column sm={2}>Test API</Form.Label>
           <Col sm={10}>
-            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/deploy-long-ship-workflow")}>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/long-ship-workflow/deploy")}>
               Deploy Workflow
-            </Button>
-            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/create-instance")}>
-              Create Instance
-            </Button>
-            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/state-service/zeebe/create-instance-with-bug")}>
-              Create Instance (With Bug)
             </Button>
           </Col>
         </Form.Group>

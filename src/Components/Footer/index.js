@@ -13,29 +13,23 @@ export default function Footer() {
             <Container className="Footer-container text-center " fluid>
                 <Row>
                     <Col className="md-6 mt-md-0 mt-3">
-                        <h5 className="text-uppercase">Footer Content</h5>
-                        <p>CHPLAY and APPSTORE LINK, etc..</p>
+                        <h5 className="text-uppercase">Project Information</h5>
+                        <p>Graduation Thesis 2021 - Software Engineering</p>
+                        <p>University Of Information Technology - VNU</p>
                     </Col>
                     <hr className="clearfix w-100 d-md-none pb-3" />
                     <Col className="col-md-3 mb-md-0 mb-3">
-                        <h5 className="text-uppercase">Liên hệ</h5>
-                        <address>
-                            Thiết kế bởi <a href="hieu.abc">Hieu Phan</a>.<br/>
-                        </address>
+                        <h5 className="text-uppercase">Student</h5>
+                        <p>(Leader) Luc Thien Binh - 16520092</p>
+                        <p>Bui Gia Hoa - 16520442</p>
                     </Col>
                     <Col className="md-3 mb-md-0 mb-3">
-                        <h5 className="text-uppercase">Links</h5>
-                        <ul className="list-unstyled">
-                            <li>
-                                <a href="#!">Về chúng tôi</a>
-                            </li>
-                        </ul>
+                        <h5 className="text-uppercase">Lecturer</h5>
+                        <p>Master Nguyen Cong Hoan</p>
+                        <p>Master Vu Duc Lung</p>
                     </Col>
                 </Row>
             </Container>
-            <div className="footer-copyright text-center py-2">	&copy; 2019 Copyright:
-                  
-            </div>
         </footer>
     )
 }

@@ -28,7 +28,7 @@ export default function LongShipCreate() {
   const [state, setState] = useState({
     transport_type_id: 0,
     transport_type_duration: 0,
-    license_plate: "",
+    license_plate: "51A-12345",
     estimated_time_of_departure: Math.floor(new Date().getTime()/1000),
     estimated_time_of_arrival:  Math.floor(new Date().getTime()/1000),
   });

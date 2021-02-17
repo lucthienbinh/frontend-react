@@ -17,7 +17,7 @@ export default function NavBarContainer(props) {
   return (
     <Navbar expand="lg" className="navbar-custom">
       <Container>
-        <Navbar.Brand href="/">Move nice</Navbar.Brand>
+        <Navbar.Brand href="/customer/list">Move nice</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">

@@ -7,14 +7,14 @@ import { useHistory } from "react-router-dom";
 
 // Import both component for file upload
 import bsCustomFileInput from 'bs-custom-file-input';
-import { ResizeImage } from "../../../../../Components/FileUpload"
+import { ResizeImage } from "../../../../Components/FileUpload"
 
-import AdminLayout from "../../../../Layouts/AdminLayout";
-import Loading from "../../../../Loading";
+import AdminLayout from "../../../Layouts/AdminLayout";
+import Loading from "../../../Loading";
 
 import { format } from 'date-fns'
 
-export default function OrderShortShipUpdate() {
+export default function Zeebe() {
   const history = useHistory();
   const [cookies] = useCookies(["csrf"]);
 
@@ -109,7 +109,7 @@ export default function OrderShortShipUpdate() {
 
     };
 
-    return await fetch(`/api/order-short-ship/id/${id}`, requestOptions)
+    return await fetch(`/api/order-short-ship/id/1`, requestOptions)
       .then((res) => {
         if (res.status !== 200) {
           return Promise.reject("Bad request sent to server!");
@@ -230,16 +230,28 @@ export default function OrderShortShipUpdate() {
   } else {
     return (
       <AdminLayout>
-        <p className="longship-update-header">Order short ship update</p>
+        <p className="longship-update-header">Zeebe API</p>
 
         {successMessage !== "" ? (<Alert key={3} variant="success">Server response: {successMessage}</Alert>) : (<></>)}
         {errorMessage !== "" ? (<Alert key={3} variant="danger">Server response: {errorMessage}</Alert>) : (<></>)}
 
         <hr />
+        <p className="longship-update-header2">Long Ship Workflow</p>
         <Form ref={formRef} className="content" onSubmit={(e) => handleTestConfirmAPI(e)}>
+        <Form.Group as={Row} controlId="buttongroup">
+          <Form.Label column sm={2}>Old Workflow</Form.Label>
+          <Col sm={10}>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/order-short-ship/update/shipper-called/")}>
+              Deploy Workflow
+            </Button>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/order-short-ship/update/shipper-received-money/")}>
+              Create Instance (With Bug)
+            </Button>
+          </Col>
+        </Form.Group>
           <Form.Group as={Row} controlId="formHorizontalAvatar">
             <Form.Label column sm={2}>
-              SP Confirmed image!
+              Select BPMN File
           </Form.Label>
             <Col sm={10}>
               <InputGroup>
@@ -259,183 +271,65 @@ export default function OrderShortShipUpdate() {
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="buttongroup">
-          <Form.Label column sm={2}>Test API</Form.Label>
+          <Form.Label column sm={2}>New Workflow</Form.Label>
           <Col sm={10}>
             <Button className="longship-update-button" onClick={() => handleTestAPI("/api/order-short-ship/update/shipper-called/")}>
-              SP Called
+              Deploy Workflow
             </Button>
             <Button className="longship-update-button" onClick={() => handleTestAPI("/api/order-short-ship/update/shipper-received-money/")}>
-              SP Received $
-            </Button>
-            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/order-short-ship/update/shipper-shipped/")}>
-              SP Shipped
-            </Button>  
-            <Button className="longship-update-button" type="submit">
-              SP Confirmed
-            </Button>
-            <Button className="longship-update-button" onClick={() => handleTestCancelAPI("/api/order-short-ship/update/cancel-order/")}>
-              Canceled
+              Create Instance
             </Button>
           </Col>
         </Form.Group>
         </Form>
+
         <hr />
-        <Form className="content">
-          <Form.Group as={Row} controlId="formHorizontalID1">
-            <Form.Label column sm={2}>OSS QR Code</Form.Label>
-            <Col sm={10}>
-              <Image className="qr-code" src={process.env.REACT_APP_API_ORCODE_URL + "/" + oss_qr_code} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorizontal2">
-            <Form.Label column sm={2}>ID</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="number" value={id} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorizontal3">
-            <Form.Label column sm={2}>OrderID</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="number" value={order_id} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorizontal4">
-            <Form.Label column sm={2}>ShipperID</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="number" value={shipper_id} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorizontal7">
-            <Form.Label column sm={2}>CustomerSendID</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="number" value={customer_send_id} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorizontal20">
-            <Form.Label column sm={2}>CustomerReceiveID</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="number" value={customer_receive_id} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorrrizontal8">
-            <Form.Label column sm={2}>Sender</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={sender} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHoryyizontal8">
-            <Form.Label column sm={2}>Receiver</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={receiver} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorizontal8">
-            <Form.Label column sm={2}>ShipperReceiveMoney</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={shipper_receive_money} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <hr />
-
-          <Form.Group as={Row} controlId="ShipperCalled">
-            <Form.Label column sm={2}>ShipperCalled</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={shipper_called} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <hr />
-
-          <Form.Group as={Row} controlId="formHorizontal11">
-            <Form.Label column sm={2}>ShipperReceivedMoney</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={shipper_received_money} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHddorizontal9">
-            <Form.Label column sm={2}>ReceivedMoneyTime</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={format(new Date(received_money_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <hr />
-
-          <Form.Group as={Row} controlId="formHorizontal11">
-            <Form.Label column sm={2}>ShipperShipped</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={shipper_shipped} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHddorizontal9">
-            <Form.Label column sm={2}>ShippedTime</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={format(new Date(shipped_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <hr />
-
-          <Form.Group as={Row} controlId="formHorizontalgID">
+        <hr />
+        <p className="longship-update-header2">Long Ship Workflow</p>
+        <Form ref={formRef} className="content" onSubmit={(e) => handleTestConfirmAPI(e)}>
+        <Form.Group as={Row} controlId="buttongroup">
+          <Form.Label column sm={2}>Old Workflow</Form.Label>
+          <Col sm={10}>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/order-short-ship/update/shipper-called/")}>
+              Deploy Workflow
+            </Button>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/order-short-ship/update/shipper-received-money/")}>
+              Create Instance (With Bug)
+            </Button>
+          </Col>
+        </Form.Group>
+          <Form.Group as={Row} controlId="formHorizontalAvatar">
             <Form.Label column sm={2}>
-              Shipper Confirmed
-            </Form.Label>
+              Select BPMN File
+          </Form.Label>
             <Col sm={10}>
-              <Image className="employee-avatar" src={process.env.REACT_APP_API_IMAGE_URL + shipper_confirmed} />
+              <InputGroup>
+                <Form.File
+                  name="file"
+                  id="custom-file"
+                  label="Select file"
+                  onChange={onChangePicture}
+                  accept="image/*"
+                  custom
+                  required
+                />
+                <InputGroup.Append>
+                  <Button className="btn btn-10" onClick={resetForm}>Remove</Button>
+                </InputGroup.Append>
+              </InputGroup>
             </Col>
           </Form.Group>
-
-          <Form.Group as={Row} controlId="formHddorizontal9">
-            <Form.Label column sm={2}>ShipperConfirmedTime</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={format(new Date(shipper_confirmed_time * 1000), 'dd/MM/yyyy HH:mm:ss')} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <hr />
-
-          <Form.Group as={Row} controlId="formHorizontal12">
-            <Form.Label column sm={2}>Canceled</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={canceled} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorizontal12">
-            <Form.Label column sm={2}>CanceledReason</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={canceled_reason} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="formHorizontal14">
-            <Form.Label column sm={2}>Finished</Form.Label>
-            <Col sm={10}>
-              <Form.Control type="text" value={finished} disabled={true} />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row}>
-            <Col sm={{ span: 1, offset: 2 }}>
-              <Button
-                className="btn-7"
-                onClick={() => history.push("/order-short-ship/list")}
-              >
-                Cancel
-              </Button>
-            </Col>
-          </Form.Group>
+          <Form.Group as={Row} controlId="buttongroup">
+          <Form.Label column sm={2}>New Workflow</Form.Label>
+          <Col sm={10}>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/order-short-ship/update/shipper-called/")}>
+              Deploy Workflow
+            </Button>
+            <Button className="longship-update-button" onClick={() => handleTestAPI("/api/order-short-ship/update/shipper-received-money/")}>
+              Create Instance
+            </Button>
+          </Col>
+        </Form.Group>
         </Form>
       </AdminLayout>
     );

@@ -44,8 +44,12 @@ const AdminLinks = [
         name: "Order list",
     },
     {
-        href: "/order-short-ship/list/",
+        href: "/order-short-ship/list",
         name: "Order short ship",
+    },
+    {
+        href: "/zeebe-api",
+        name: "Zeebe API",
     },
 ];
 

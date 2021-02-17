@@ -200,14 +200,14 @@ export default function LongShipCreate() {
 
         <Form.Group as={Row} controlId="formHorfizontal4">
           <Form.Label column sm={2}>
-            Duration In Second
+            Duration (days)
           </Form.Label>
           <Col sm={10}>
             <Form.Control
               type="number"
               name="transport_type_duration"
               placeholder="Select ID in the table"
-              value={transport_type_duration}
+              value={Math.floor(transport_type_duration / 86400)}
               required
               disabled={true}
             />

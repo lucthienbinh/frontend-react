@@ -13,3 +13,8 @@ In the project directory, you can run:
 Open [http://localhost:3000/customer/list](http://localhost:3000/customer/list) to view it in the browser.
 
 **Note: config back-end API in package.json!**
+
+## Project Information
+
+Graduation Thesis 2021 - Software Engineering
+University Of Information Technology - VNU

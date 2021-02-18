@@ -16,5 +16,5 @@ Open [http://localhost:3000/customer/list](http://localhost:3000/customer/list) 
 
 ## Project Information
 
-Graduation Thesis 2021 - Software Engineering
+Graduation Thesis 2021 - Software Engineering\
 University Of Information Technology - VNU
